@@ -1,0 +1,57 @@
+{
+  "hooks": {
+    "afterEdit": [
+      {
+        "pattern": "frontend/**/*.{ts,tsx,js,jsx,json,css}",
+        "command": "cd frontend && npx prettier --write $FILE 2>/dev/null || true"
+      },
+      {
+        "pattern": "backend/**/*.py",
+        "command": "cd backend && ruff format $FILE 2>/dev/null || true"
+      }
+    ],
+    "beforeEdit": [
+      {
+        "pattern": "**/.env",
+        "command": "echo 'BLOCKED: Do not edit .env files directly. Use .env.example instead.' && exit 1"
+      },
+      {
+        "pattern": "**/.env.local",
+        "command": "echo 'BLOCKED: Do not edit .env.local files directly. Use .env.example instead.' && exit 1"
+      },
+      {
+        "pattern": "**/package-lock.json",
+        "command": "echo 'BLOCKED: Do not edit lockfiles directly. Run npm install instead.' && exit 1"
+      },
+      {
+        "pattern": "**/poetry.lock",
+        "command": "echo 'BLOCKED: Do not edit lockfiles directly. Run poetry lock instead.' && exit 1"
+      }
+    ],
+    "afterCompaction": [
+      {
+        "command": "cat .claude/CLAUDE.md"
+      }
+    ]
+  },
+  "permissions": {
+    "allowedTools": [
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(python *)",
+      "Bash(pip *)",
+      "Bash(ruff *)",
+      "Bash(pytest *)",
+      "Bash(alembic *)",
+      "Bash(git *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cat *)"
+    ]
+  }
+}

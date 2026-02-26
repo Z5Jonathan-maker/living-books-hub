@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-cream text-ink font-sans;
+  }
+
+  ::selection {
+    @apply bg-sage-light/50 text-ink;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-forest text-white font-medium rounded-lg
+           hover:bg-forest/90 transition-all duration-200 shadow-sm hover:shadow-md
+           focus:outline-none focus:ring-2 focus:ring-forest/50 focus:ring-offset-2 focus:ring-offset-cream;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-white text-ink font-medium rounded-lg
+           border border-ink/10 hover:border-ink/20 transition-all duration-200 shadow-sm hover:shadow-md
+           focus:outline-none focus:ring-2 focus:ring-ink/20 focus:ring-offset-2 focus:ring-offset-cream;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-gold text-white font-semibold rounded-lg
+           hover:bg-gold/90 transition-all duration-200 shadow-md hover:shadow-lg
+           focus:outline-none focus:ring-2 focus:ring-gold/50 focus:ring-offset-2;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-ink/5 overflow-hidden
+           hover:shadow-md transition-all duration-300;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-sage {
+    @apply badge bg-sage-light/30 text-forest;
+  }
+
+  .badge-gold {
+    @apply badge bg-gold-light/50 text-leather;
+  }
+
+  .badge-rust {
+    @apply badge bg-rust/10 text-rust;
+  }
+
+  .input {
+    @apply w-full px-4 py-3 bg-white border border-ink/10 rounded-lg
+           text-ink placeholder:text-warm-gray/60
+           focus:outline-none focus:ring-2 focus:ring-sage/30 focus:border-sage
+           transition-all duration-200;
+  }
+
+  .section-heading {
+    @apply text-3xl md:text-4xl font-serif font-bold text-ink tracking-tight;
+  }
+
+  .section-subheading {
+    @apply text-lg text-warm-gray leading-relaxed max-w-2xl;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-parchment;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-sage/30 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-sage/50;
+}
+
+/* Page transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}

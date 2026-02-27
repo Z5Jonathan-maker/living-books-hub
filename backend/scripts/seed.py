@@ -1961,7 +1961,22 @@ async def seed():
         list_count = (await session.execute(select(func.count(CuratedList.id)))).scalar() or 0
 
         if book_count >= len(BOOKS) and list_count >= len(CURATED_LISTS):
-            print(f"Database already has {book_count} books and {list_count} lists. Skipping seed.")
+            # Update cover images if any are missing
+            missing_covers = (await session.execute(
+                select(func.count(Book.id)).where(Book.cover_image_url.is_(None))
+            )).scalar() or 0
+            if missing_covers > 0:
+                print(f"Updating {missing_covers} books with cover images...")
+                books = (await session.execute(
+                    select(Book).where(Book.cover_image_url.is_(None))
+                )).scalars().all()
+                for b in books:
+                    if b.isbn:
+                        b.cover_image_url = f"https://covers.openlibrary.org/b/isbn/{b.isbn}-L.jpg"
+                await session.commit()
+                print("Cover images updated!")
+            else:
+                print(f"Database already has {book_count} books and {list_count} lists. Skipping seed.")
             return
 
         # Clear partial data for clean re-seed
@@ -1978,7 +1993,10 @@ async def seed():
         # Insert books
         book_map = {}
         for data in BOOKS:
-            book = Book(**data)
+            book_data = dict(data)
+            if not book_data.get("cover_image_url") and book_data.get("isbn"):
+                book_data["cover_image_url"] = f"https://covers.openlibrary.org/b/isbn/{book_data['isbn']}-L.jpg"
+            book = Book(**book_data)
             session.add(book)
             await session.flush()
             book_map[data["title"]] = book.id

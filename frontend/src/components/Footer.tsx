@@ -131,12 +131,20 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <span className="text-sm text-white/40">
-                  What are Living Books?
-                </span>
+                <Link
+                  href="/what-are-living-books"
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  What Are Living Books?
+                </Link>
               </li>
               <li>
-                <span className="text-sm text-white/40">Contact Us</span>
+                <Link
+                  href="/about"
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  About Us
+                </Link>
               </li>
             </ul>
           </div>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBook, getRelatedBooks } from "@/lib/api";
 import { BookCard } from "@/components/BookCard";
+import { AddToReadingPlan } from "@/components/AddToReadingPlan";
 import type { Metadata } from "next";
 
 type Props = { params: { id: string } };
@@ -135,6 +136,23 @@ export default async function BookDetailPage({ params }: Props) {
                 {s}
               </Link>
             ))}
+          </div>
+
+          {/* Reading Plan Button */}
+          <div className="mt-6">
+            <AddToReadingPlan
+              book={{
+                id: book.id,
+                title: book.title,
+                author: book.author,
+                description: book.description,
+                age_range: book.age_range,
+                subjects: book.subjects,
+                cover_image_url: book.cover_image_url,
+                reading_level: book.reading_level,
+                popularity_score: book.popularity_score,
+              }}
+            />
           </div>
 
           {/* Description */}

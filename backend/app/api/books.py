@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text, cast, String
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -24,16 +24,23 @@ async def search_books(
     per_page: int = Query(default=24, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
 ):
-    """Search and filter books with pagination."""
+    """Search and filter books with full-text search and pagination."""
     query = select(Book)
 
-    # Text search
+    # Full-text search using PostgreSQL ts_vectors for relevance-ranked results
     if q:
+        # Use plainto_tsquery for safe user input (no special syntax needed)
+        ts_query = func.plainto_tsquery("english", q)
+        ts_vector = func.to_tsvector(
+            "english",
+            Book.title + text("' '") + Book.author + text("' '") + Book.description,
+        )
+        # Match on full-text OR fallback to ILIKE for partial matches
         search_term = f"%{q}%"
         query = query.where(
-            (Book.title.ilike(search_term))
+            ts_vector.op("@@")(ts_query)
+            | (Book.title.ilike(search_term))
             | (Book.author.ilike(search_term))
-            | (Book.description.ilike(search_term))
         )
 
     # Filters

@@ -50,6 +50,18 @@ export function Header() {
               Curated Lists
             </Link>
             <Link
+              href="/what-are-living-books"
+              className="px-4 py-2 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5 transition-all"
+            >
+              What Are Living Books?
+            </Link>
+            <Link
+              href="/reading-plan"
+              className="px-4 py-2 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5 transition-all"
+            >
+              My Reading Plan
+            </Link>
+            <Link
               href="/subscribe"
               className="ml-2 btn-gold text-sm py-2 px-4"
             >
@@ -105,6 +117,13 @@ export function Header() {
               className="block px-4 py-3 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5"
             >
               Curated Lists
+            </Link>
+            <Link
+              href="/what-are-living-books"
+              onClick={() => setMobileOpen(false)}
+              className="block px-4 py-3 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5"
+            >
+              What Are Living Books?
             </Link>
             <Link
               href="/subscribe"

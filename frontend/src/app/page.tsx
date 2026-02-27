@@ -19,6 +19,7 @@ async function getData() {
       stats: {
         total_books: 0,
         total_lists: 0,
+        total_subscribers: 0,
         subjects: [],
         age_ranges: [],
         reading_levels: [],

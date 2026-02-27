@@ -182,6 +182,7 @@ class SubscriptionStatus(BaseModel):
 class CatalogStats(BaseModel):
     total_books: int
     total_lists: int
+    total_subscribers: int = 0
     subjects: list[str]
     age_ranges: list[str]
     reading_levels: list[str]

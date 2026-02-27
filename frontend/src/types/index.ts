@@ -77,6 +77,7 @@ export interface FilterOptions {
 export interface CatalogStats {
   total_books: number;
   total_lists: number;
+  total_subscribers: number;
   subjects: string[];
   age_ranges: string[];
   reading_levels: string[];

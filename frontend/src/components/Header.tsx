@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, loading } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 bg-cream/95 backdrop-blur-md border-b border-ink/5">
@@ -67,12 +69,34 @@ export function Header() {
             >
               My Reading Plan
             </Link>
-            <Link
-              href="/subscribe"
-              className="ml-2 btn-gold text-sm py-2 px-4"
-            >
-              Go Premium
-            </Link>
+            {!loading && (
+              user ? (
+                <Link
+                  href="/dashboard"
+                  className="ml-2 flex items-center gap-2 px-4 py-2 text-sm font-medium text-forest bg-forest/10 rounded-lg hover:bg-forest/20 transition-all"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />
+                  </svg>
+                  Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="ml-2 px-4 py-2 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5 transition-all"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/subscribe"
+                    className="btn-gold text-sm py-2 px-4"
+                  >
+                    Go Premium
+                  </Link>
+                </>
+              )
+            )}
           </nav>
 
           {/* Mobile menu button */}
@@ -147,13 +171,34 @@ export function Header() {
             >
               My Reading Plan
             </Link>
-            <Link
-              href="/subscribe"
-              onClick={() => setMobileOpen(false)}
-              className="block px-4 py-3 text-sm font-medium text-gold hover:text-gold/80 rounded-lg hover:bg-gold-light/20"
-            >
-              Go Premium
-            </Link>
+            {!loading && (
+              user ? (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMobileOpen(false)}
+                  className="block px-4 py-3 text-sm font-medium text-forest hover:text-forest/80 rounded-lg hover:bg-forest/10"
+                >
+                  My Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-4 py-3 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/subscribe"
+                    onClick={() => setMobileOpen(false)}
+                    className="block px-4 py-3 text-sm font-medium text-gold hover:text-gold/80 rounded-lg hover:bg-gold-light/20"
+                  >
+                    Go Premium
+                  </Link>
+                </>
+              )
+            )}
           </div>
         </div>
       )}

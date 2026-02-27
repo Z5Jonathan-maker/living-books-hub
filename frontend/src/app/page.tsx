@@ -197,39 +197,54 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* AI Curriculum Builder Highlight */}
       <section className="py-16 bg-parchment/30">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-heading text-center mb-10">What Parents Are Saying</h2>
+          <div className="text-center mb-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-light/40 text-leather text-xs font-medium mb-4">
+              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 1l2.39 4.842 5.34.776-3.865 3.768.912 5.32L10 13.347l-4.777 2.36.912-5.32L2.27 6.617l5.34-.775L10 1z" />
+              </svg>
+              Premium Feature
+            </span>
+            <h2 className="section-heading">Build Your Child&apos;s Reading Year with AI</h2>
+            <p className="section-subheading mt-4 mx-auto max-w-2xl">
+              Tell us about your child — their age, interests, and reading level — and our AI builds a personalized, term-by-term curriculum from our curated catalog. No more hours of planning.
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                quote: "I used to spend hours searching through Facebook groups for book recommendations. Now I just come here and find exactly what I need in minutes.",
-                name: "Sarah M.",
-                role: "Charlotte Mason homeschooler, mom of 4",
+                icon: <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0" />,
+                title: "Personalized to Your Child",
+                desc: "Matched to their age, grade level, interests, and reading ability. Every child gets a unique plan.",
               },
               {
-                quote: "The curated lists alone saved me weeks of planning. My kids are reading more than ever, and they actually enjoy their history and science books now.",
-                name: "Rebecca T.",
-                role: "Eclectic homeschooler, mom of 2",
+                icon: <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />,
+                title: "A Full Year, Week by Week",
+                desc: "Three terms (Fall, Winter, Spring), ~12 weeks each, with 1-2 books per week. Ready to follow from day one.",
               },
               {
-                quote: "Finally, a site that understands what living books really are. The age-range filters and reading levels make it so easy to find the right book for each child.",
-                name: "Jennifer L.",
-                role: "Classical educator, mom of 3",
+                icon: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />,
+                title: "Only Vetted Living Books",
+                desc: "Every recommendation comes from our curated catalog — real living books, not random suggestions.",
               },
-            ].map((t) => (
-              <div key={t.name} className="bg-white rounded-xl p-6 shadow-sm border border-ink/5">
-                <svg className="w-8 h-8 text-gold/40 mb-3" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z" />
-                </svg>
-                <p className="text-sm text-ink leading-relaxed mb-4">{t.quote}</p>
-                <div>
-                  <p className="text-sm font-semibold text-ink">{t.name}</p>
-                  <p className="text-xs text-warm-gray">{t.role}</p>
+            ].map((item) => (
+              <div key={item.title} className="bg-white rounded-xl p-6 shadow-sm border border-ink/5 text-center">
+                <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-gold-light/30 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    {item.icon}
+                  </svg>
                 </div>
+                <h3 className="font-serif font-bold text-ink mb-2">{item.title}</h3>
+                <p className="text-sm text-warm-gray leading-relaxed">{item.desc}</p>
               </div>
             ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link href="/curriculum" className="btn-gold text-lg px-8 py-3">
+              Build Your Year
+            </Link>
           </div>
         </div>
       </section>
@@ -416,21 +431,20 @@ export default async function HomePage() {
       <section className="py-20 bg-forest text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-serif font-bold leading-tight">
-            Unlock the Full Living Books Library
+            Stop Planning. Start Reading.
           </h2>
           <p className="mt-4 text-lg text-white/70 max-w-2xl mx-auto">
-            Go Premium for unlimited access to every curated list, advanced
-            filters, personal reading plans, and early access to new features.
+            Let AI build your child&apos;s personalized reading year from our curated catalog. Unlimited children, synced reading plans, community reviews, and a smart librarian that knows your family.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/subscribe" className="btn-gold text-lg px-8 py-4">
-              Start Premium — $5.99/mo
+              Go Premium — $5.99/mo
             </Link>
             <Link
-              href="/search"
+              href="/curriculum"
               className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
             >
-              Browse Free
+              See How It Works
             </Link>
           </div>
         </div>

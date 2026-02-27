@@ -9,6 +9,7 @@ import { BookJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 import { ShareButtons } from "@/components/ShareButtons";
 import { AffiliateLinks } from "@/components/AffiliateLinks";
 import { EmailSignup } from "@/components/EmailSignup";
+import { BookReviews } from "@/components/BookReviews";
 import type { Metadata } from "next";
 
 const SITE_URL =
@@ -249,6 +250,9 @@ export default async function BookDetailPage({ params }: Props) {
           {book.links.length > 0 && (
             <AffiliateLinks bookId={book.id} links={book.links} />
           )}
+
+          {/* Reviews */}
+          <BookReviews bookId={book.id} />
 
           {/* Related Books */}
           {related.length > 0 && (

@@ -15,6 +15,20 @@ class Settings(BaseSettings):
 
     admin_api_key: str = "change-me-in-production"
 
+    # Auth
+    jwt_secret_key: str = "change-me-in-production-jwt-secret"
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_minutes: int = 60 * 24 * 7  # 7 days
+    magic_link_expire_minutes: int = 15
+
+    # Email (Resend)
+    resend_api_key: str = ""
+    from_email: str = "Living Books Hub <noreply@livingbookshub.com>"
+
+    # Groq AI
+    groq_api_key: str = ""
+    groq_enabled: bool = False
+
     model_config = {"env_file": ".env", "extra": "ignore"}
 
     @property

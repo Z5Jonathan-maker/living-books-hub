@@ -87,3 +87,71 @@ export interface LibrarianResponse {
   reply: string;
   suggested_books: BookSummary[];
 }
+
+// --- Auth & User ---
+export interface User {
+  id: number;
+  email: string;
+  name: string | null;
+  subscription_tier: string;
+  subscription_active: boolean;
+  created_at: string;
+}
+
+// --- Children ---
+export interface Child {
+  id: number;
+  name: string;
+  birth_year: number | null;
+  grade_level: string | null;
+  interests: string[];
+  reading_level: string | null;
+  created_at: string;
+}
+
+// --- Reading Plans ---
+export interface ReadingPlanItem {
+  id: number;
+  book: BookSummary;
+  week_number: number | null;
+  order_in_week: number;
+  notes: string | null;
+  status: string;
+  created_at: string;
+}
+
+export interface ReadingPlan {
+  id: number;
+  name: string;
+  description: string | null;
+  child_id: number | null;
+  is_ai_generated: boolean;
+  created_at: string;
+  item_count: number;
+}
+
+export interface ReadingPlanDetail extends ReadingPlan {
+  items: ReadingPlanItem[];
+}
+
+// --- Reviews ---
+export interface Review {
+  id: number;
+  user_name: string | null;
+  rating: number;
+  review_text: string | null;
+  child_age_when_read: number | null;
+  created_at: string;
+}
+
+export interface ReviewSummary {
+  avg_rating: number | null;
+  review_count: number;
+}
+
+// --- AI Curriculum ---
+export interface CurriculumResponse {
+  plan_id: number;
+  plan_name: string;
+  message: string;
+}

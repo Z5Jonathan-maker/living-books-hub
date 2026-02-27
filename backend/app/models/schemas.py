@@ -220,3 +220,145 @@ class ClickTrackRequest(BaseModel):
 
 class ClickTrackResponse(BaseModel):
     success: bool
+
+
+# --- User & Auth ---
+class UserOut(BaseModel):
+    id: int
+    email: str
+    name: str | None
+    subscription_tier: str
+    subscription_active: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class MagicLinkRequest(BaseModel):
+    email: EmailStr
+
+
+class MagicLinkResponse(BaseModel):
+    message: str
+
+
+class VerifyTokenRequest(BaseModel):
+    token: str
+
+
+# --- Children ---
+class ChildCreate(BaseModel):
+    name: str
+    birth_year: int | None = None
+    grade_level: str | None = None
+    interests: list[str] = []
+    reading_level: str | None = None
+
+
+class ChildUpdate(BaseModel):
+    name: str | None = None
+    birth_year: int | None = None
+    grade_level: str | None = None
+    interests: list[str] | None = None
+    reading_level: str | None = None
+
+
+class ChildOut(BaseModel):
+    id: int
+    name: str
+    birth_year: int | None
+    grade_level: str | None
+    interests: list[str]
+    reading_level: str | None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+# --- Reading Plans ---
+class ReadingPlanCreate(BaseModel):
+    name: str
+    child_id: int | None = None
+    description: str | None = None
+
+
+class ReadingPlanItemCreate(BaseModel):
+    book_id: int
+    week_number: int | None = None
+    order_in_week: int = 0
+    notes: str | None = None
+
+
+class ReadingPlanItemUpdate(BaseModel):
+    status: str | None = None
+    notes: str | None = None
+    week_number: int | None = None
+
+
+class ReadingPlanItemOut(BaseModel):
+    id: int
+    book: BookSummary
+    week_number: int | None
+    order_in_week: int
+    notes: str | None
+    status: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class ReadingPlanOut(BaseModel):
+    id: int
+    name: str
+    description: str | None
+    child_id: int | None
+    is_ai_generated: bool
+    created_at: datetime
+    item_count: int = 0
+
+    model_config = {"from_attributes": True}
+
+
+class ReadingPlanDetail(ReadingPlanOut):
+    items: list[ReadingPlanItemOut] = []
+
+
+class ImportLocalPlanRequest(BaseModel):
+    """Import a localStorage reading plan to the server."""
+    name: str = "My Reading Plan"
+    items: list[dict]  # [{book_id, status, notes}]
+
+
+# --- Book Reviews ---
+class ReviewCreate(BaseModel):
+    rating: int = Field(ge=1, le=5)
+    review_text: str | None = None
+    child_age_when_read: int | None = None
+
+
+class ReviewOut(BaseModel):
+    id: int
+    user_name: str | None
+    rating: int
+    review_text: str | None
+    child_age_when_read: int | None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class ReviewSummary(BaseModel):
+    avg_rating: float | None
+    review_count: int
+
+
+# --- AI Curriculum ---
+class CurriculumRequest(BaseModel):
+    child_id: int
+    preferences: dict | None = None  # {"subjects": [...], "time_periods": [...]}
+
+
+class CurriculumResponse(BaseModel):
+    plan_id: int
+    plan_name: str
+    message: str

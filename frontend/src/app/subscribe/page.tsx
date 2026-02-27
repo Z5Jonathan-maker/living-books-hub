@@ -53,11 +53,11 @@ export default function SubscribePage() {
           <ul className="mt-8 space-y-3 flex-1">
             {[
               "Browse the full book catalog",
-              "Search by title, author, and description",
-              "Filter by age range",
-              "View 3 curated lists",
-              "Book detail pages with purchase links",
-              "Ask the Librarian (basic)",
+              "Search & basic filters",
+              "1 child profile",
+              "Local reading plan (browser only)",
+              "Basic AI librarian",
+              "View community reviews",
             ].map((feature) => (
               <li key={feature} className="flex items-start gap-3">
                 <svg
@@ -102,13 +102,13 @@ export default function SubscribePage() {
           <ul className="mt-8 space-y-3 flex-1">
             {[
               "Everything in Explorer, plus:",
-              "All advanced filters (subject, time period, region, reading level)",
-              "Unlimited curated lists",
-              "Personal reading plan builder",
-              "AI-powered librarian recommendations",
+              "AI Curriculum Builder — personalized year-long plans",
+              "Unlimited child profiles",
+              "Server-synced reading plans across devices",
+              "Smart AI librarian with family context",
+              "Write reviews & ratings",
+              "All advanced filters & curated lists",
               "Priority access to new features",
-              "Early access to new book additions",
-              "Ad-free experience",
             ].map((feature, i) => (
               <li key={feature} className="flex items-start gap-3">
                 <svg

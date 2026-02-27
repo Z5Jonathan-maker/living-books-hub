@@ -3,7 +3,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import admin, books, librarian, lists, stats, stripe_routes, newsletter, tracking
+from app.api import (
+    admin, auth, books, children, curriculum, librarian,
+    lists, newsletter, plans, reviews, stats, stripe_routes, tracking,
+)
 from app.core.config import settings
 
 
@@ -40,6 +43,11 @@ app.include_router(stripe_routes.router)
 app.include_router(admin.router)
 app.include_router(newsletter.router)
 app.include_router(tracking.router)
+app.include_router(auth.router)
+app.include_router(children.router)
+app.include_router(plans.router)
+app.include_router(reviews.router)
+app.include_router(curriculum.router)
 
 
 @app.get("/", tags=["health"])

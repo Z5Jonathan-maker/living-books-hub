@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getBook, getRelatedBooks } from "@/lib/api";
 import { BookCard } from "@/components/BookCard";
@@ -86,10 +87,13 @@ export default async function BookDetailPage({ params }: Props) {
           <div className="sticky top-28">
             <div className="aspect-[3/4] bg-gradient-to-br from-parchment to-sage-light/20 rounded-2xl shadow-lg flex items-center justify-center overflow-hidden">
               {book.cover_image_url ? (
-                <img
+                <Image
                   src={book.cover_image_url}
                   alt={book.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                  className="object-cover"
+                  priority
                 />
               ) : (
                 <div className="text-center p-8">

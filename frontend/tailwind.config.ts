@@ -21,6 +21,7 @@ const config: Config = {
       fontFamily: {
         serif: ["Georgia", "Cambria", '"Times New Roman"', "serif"],
         sans: [
+          "var(--font-inter)",
           "Inter",
           "system-ui",
           "-apple-system",

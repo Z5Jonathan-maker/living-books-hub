@@ -50,7 +50,7 @@ export function AffiliateLinks({
               key={link.id}
               href={link.url}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow sponsored"
               onClick={() => handleClick(link)}
               className={`flex items-center justify-between p-4 rounded-xl border border-ink/5 ${colors.bg} ${colors.hover} transition-all group shadow-sm hover:shadow-md`}
             >

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { BookSummary } from "@/types";
 
 const READING_LEVEL_COLORS: Record<string, string> = {
@@ -20,10 +21,12 @@ export function BookCard({ book }: { book: BookSummary }) {
         {/* Cover placeholder */}
         <div className="aspect-[3/4] bg-gradient-to-br from-parchment to-sage-light/20 flex items-center justify-center relative overflow-hidden">
           {book.cover_image_url ? (
-            <img
+            <Image
               src={book.cover_image_url}
               alt={book.title}
-              className="w-full h-full object-cover"
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+              className="object-cover"
             />
           ) : (
             <div className="text-center p-6">

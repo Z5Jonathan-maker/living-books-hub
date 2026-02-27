@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getListDetail } from "@/lib/api";
 import { ItemListJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
@@ -118,12 +119,14 @@ export default async function ListDetailPage({ params }: Props) {
             </div>
 
             {/* Cover */}
-            <div className="flex-shrink-0 w-16 h-20 bg-gradient-to-br from-parchment to-sage-light/20 rounded-lg overflow-hidden">
+            <div className="flex-shrink-0 w-16 h-20 bg-gradient-to-br from-parchment to-sage-light/20 rounded-lg overflow-hidden relative">
               {item.book.cover_image_url ? (
-                <img
+                <Image
                   src={item.book.cover_image_url}
                   alt={item.book.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="64px"
+                  className="object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">

@@ -141,6 +141,13 @@ export function Header() {
               Blog
             </Link>
             <Link
+              href="/reading-plan"
+              onClick={() => setMobileOpen(false)}
+              className="block px-4 py-3 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5"
+            >
+              My Reading Plan
+            </Link>
+            <Link
               href="/subscribe"
               onClick={() => setMobileOpen(false)}
               className="block px-4 py-3 text-sm font-medium text-gold hover:text-gold/80 rounded-lg hover:bg-gold-light/20"

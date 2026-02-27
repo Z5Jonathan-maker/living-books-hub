@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getBook, getRelatedBooks } from "@/lib/api";
+import { getBook, getRelatedBooks, searchBooks } from "@/lib/api";
 import { BookCard } from "@/components/BookCard";
 import { AddToReadingPlan } from "@/components/AddToReadingPlan";
 import { BookJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
@@ -13,6 +13,15 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://livingbookshub.com";
 
 type Props = { params: { id: string } };
+
+export async function generateStaticParams() {
+  try {
+    const data = await searchBooks({ sort: "popularity", per_page: "100" });
+    return data.items.map((b) => ({ id: b.id.toString() }));
+  } catch {
+    return [];
+  }
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { subscribeNewsletter } from "@/lib/api";
 
 type Variant = "inline" | "card" | "footer";
@@ -14,13 +15,20 @@ export function EmailSignup({
 }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const searchParams = useSearchParams();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
     setStatus("loading");
     try {
-      await subscribeNewsletter({ email, signup_source: source });
+      await subscribeNewsletter({
+        email,
+        signup_source: source,
+        utm_source: searchParams.get("utm_source") || undefined,
+        utm_medium: searchParams.get("utm_medium") || undefined,
+        utm_campaign: searchParams.get("utm_campaign") || undefined,
+      });
       setStatus("success");
       setEmail("");
     } catch {

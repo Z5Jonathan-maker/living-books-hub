@@ -24,20 +24,24 @@ async def subscribe(
 ):
     newsletter_limiter.check(request)
     """Subscribe to the newsletter. Idempotent — re-subscribing the same email is a no-op."""
-    stmt = (
-        pg_insert(EmailSubscriber)
-        .values(
-            email=req.email.lower().strip(),
-            name=req.name,
-            signup_source=req.signup_source,
-            utm_source=req.utm_source,
-            utm_medium=req.utm_medium,
-            utm_campaign=req.utm_campaign,
+    try:
+        stmt = (
+            pg_insert(EmailSubscriber)
+            .values(
+                email=req.email.lower().strip(),
+                name=req.name,
+                signup_source=req.signup_source,
+                utm_source=req.utm_source,
+                utm_medium=req.utm_medium,
+                utm_campaign=req.utm_campaign,
+            )
+            .on_conflict_do_nothing(index_elements=["email"])
         )
-        .on_conflict_do_nothing(index_elements=["email"])
-    )
-    await db.execute(stmt)
-    await db.commit()
+        await db.execute(stmt)
+        await db.commit()
+    except Exception:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail="Unable to process subscription right now.")
     return NewsletterSubscribeResponse(
         success=True, message="You're subscribed! Welcome to the Living Books community."
     )

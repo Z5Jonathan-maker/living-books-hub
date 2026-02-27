@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getListDetail } from "@/lib/api";
+import { getListDetail, getLists } from "@/lib/api";
 import { ItemListJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 import { ShareButtons } from "@/components/ShareButtons";
 import { PrintListButton } from "@/components/PrintListButton";
@@ -11,6 +11,15 @@ const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://livingbookshub.com";
 
 type Props = { params: { slug: string } };
+
+export async function generateStaticParams() {
+  try {
+    const lists = await getLists();
+    return lists.map((l) => ({ slug: l.slug }));
+  } catch {
+    return [];
+  }
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {

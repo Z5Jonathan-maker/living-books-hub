@@ -7,6 +7,7 @@ from app.core.database import get_db
 from app.models.book import Book
 from app.models.list import CuratedList, ListItem
 from app.models.schemas import BookSummary, CuratedListDetail, CuratedListOut, ListItemOut
+from app.api.books import _ensure_cover_url
 
 router = APIRouter(prefix="/api/v1/lists", tags=["curated lists"])
 
@@ -67,10 +68,12 @@ async def get_list_detail(slug: str, db: AsyncSession = Depends(get_db)):
 
     items_out = []
     for item in sorted(lst.items, key=lambda x: x.rank):
+        book_summary = BookSummary.model_validate(item.book)
+        book_summary.cover_image_url = _ensure_cover_url(item.book)
         items_out.append(
             ListItemOut(
                 id=item.id,
-                book=BookSummary.model_validate(item.book),
+                book=book_summary,
                 rank=item.rank,
                 note=item.note,
             )

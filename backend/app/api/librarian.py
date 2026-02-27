@@ -6,6 +6,7 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.models.book import Book
 from app.models.schemas import BookSummary, LibrarianRequest, LibrarianResponse
+from app.api.books import _ensure_cover_url
 
 router = APIRouter(prefix="/api/v1/librarian", tags=["librarian"])
 
@@ -48,7 +49,12 @@ async def _deterministic_suggestions(
             "living books that families love:"
         )
 
-    return reply, [BookSummary.model_validate(b) for b in books]
+    items = []
+    for b in books:
+        summary = BookSummary.model_validate(b)
+        summary.cover_image_url = _ensure_cover_url(b)
+        items.append(summary)
+    return reply, items
 
 
 @router.post("", response_model=LibrarianResponse)
@@ -97,10 +103,15 @@ async def ask_librarian(
             mentioned = []
             for b in books:
                 if b.title.lower() in reply.lower():
-                    mentioned.append(BookSummary.model_validate(b))
+                    summary = BookSummary.model_validate(b)
+                    summary.cover_image_url = _ensure_cover_url(b)
+                    mentioned.append(summary)
 
             if not mentioned:
-                mentioned = [BookSummary.model_validate(b) for b in books[:3]]
+                for b in books[:3]:
+                    summary = BookSummary.model_validate(b)
+                    summary.cover_image_url = _ensure_cover_url(b)
+                    mentioned.append(summary)
 
             return LibrarianResponse(reply=reply, suggested_books=mentioned)
         except Exception:

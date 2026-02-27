@@ -10,6 +10,15 @@ from app.models.schemas import BookOut, BookSearchParams, BookSummary, BookLinkO
 router = APIRouter(prefix="/api/v1/books", tags=["books"])
 
 
+def _ensure_cover_url(book: Book) -> str | None:
+    """Return cover_image_url, falling back to Open Library if ISBN exists."""
+    if book.cover_image_url:
+        return book.cover_image_url
+    if book.isbn:
+        return f"https://covers.openlibrary.org/b/isbn/{book.isbn}-L.jpg"
+    return None
+
+
 @router.get("", response_model=PaginatedBooks)
 async def search_books(
     q: str | None = None,
@@ -80,8 +89,14 @@ async def search_books(
     result = await db.execute(query)
     books = result.scalars().all()
 
+    items = []
+    for b in books:
+        summary = BookSummary.model_validate(b)
+        summary.cover_image_url = _ensure_cover_url(b)
+        items.append(summary)
+
     return PaginatedBooks(
-        items=[BookSummary.model_validate(b) for b in books],
+        items=items,
         total=total,
         page=page,
         per_page=per_page,
@@ -174,7 +189,7 @@ async def get_book(book_id: int, db: AsyncSession = Depends(get_db)):
         "time_period": book.time_period,
         "region": book.region,
         "isbn": book.isbn,
-        "cover_image_url": book.cover_image_url,
+        "cover_image_url": _ensure_cover_url(book),
         "language": book.language,
         "series": book.series,
         "awards": book.awards,
@@ -209,4 +224,9 @@ async def get_related_books(book_id: int, limit: int = 6, db: AsyncSession = Dep
     )
     result = await db.execute(query)
     related = result.scalars().all()
-    return [BookSummary.model_validate(b) for b in related]
+    items = []
+    for b in related:
+        summary = BookSummary.model_validate(b)
+        summary.cover_image_url = _ensure_cover_url(b)
+        items.append(summary)
+    return items

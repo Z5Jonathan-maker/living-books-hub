@@ -19,7 +19,8 @@ async function fetchAPI<T>(path: string, options?: RequestInit): Promise<T> {
 export async function searchBooks(params: Record<string, string>) {
   const searchParams = new URLSearchParams(params);
   return fetchAPI<import("@/types").PaginatedBooks>(
-    `/api/v1/books?${searchParams.toString()}`
+    `/api/v1/books?${searchParams.toString()}`,
+    { next: { revalidate: 300 } } as RequestInit
   );
 }
 

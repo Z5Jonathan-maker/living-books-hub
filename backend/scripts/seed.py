@@ -992,22 +992,6 @@ BOOKS = [
         "publication_year": 1921,
         "publisher": "Dover Publications",
     },
-    {
-        "title": "Pagoo",
-        "author": "Holling C. Holling",
-        "description": "The life cycle of a hermit crab explored through stunning illustrations and a narrative that makes marine biology unforgettable.",
-        "reading_level": "early-intermediate",
-        "age_range": "6-10",
-        "subjects": ["nature", "science", "marine biology"],
-        "time_period": "20th century",
-        "region": "North America",
-        "isbn": "9780395539644",
-        "language": "English",
-        "popularity_score": 80,
-        "page_count": 88,
-        "publication_year": 1957,
-        "publisher": "Houghton Mifflin",
-    },
     # === POETRY ===
     {
         "title": "A Child's Garden of Verses",
@@ -1578,22 +1562,6 @@ BOOKS = [
         "publisher": "Various",
     },
     {
-        "title": "Understood Betsy",
-        "author": "Dorothy Canfield Fisher",
-        "description": "An over-protected city girl discovers independence, confidence, and the joy of learning when she goes to live with Vermont relatives.",
-        "reading_level": "early-intermediate",
-        "age_range": "7-11",
-        "subjects": ["literature", "character", "farm life"],
-        "time_period": "Early 20th century",
-        "region": "North America",
-        "isbn": "9780805005806",
-        "language": "English",
-        "popularity_score": 88,
-        "page_count": 224,
-        "publication_year": 1917,
-        "publisher": "Henry Holt",
-    },
-    {
         "title": "Swallows and Amazons",
         "author": "Arthur Ransome",
         "description": "Four children sail, camp, and explore the English Lake District in a timeless adventure of childhood freedom and imagination.",
@@ -1987,12 +1955,25 @@ async def seed():
         await conn.run_sync(Base.metadata.create_all)
 
     async with async_session() as session:
-        # Check if already seeded
-        from sqlalchemy import select, func
-        count = (await session.execute(select(func.count(Book.id)))).scalar()
-        if count and count > 0:
-            print(f"Database already has {count} books. Skipping seed.")
+        # Check if already fully seeded
+        from sqlalchemy import select, func, delete
+        book_count = (await session.execute(select(func.count(Book.id)))).scalar() or 0
+        list_count = (await session.execute(select(func.count(CuratedList.id)))).scalar() or 0
+
+        if book_count >= len(BOOKS) and list_count >= len(CURATED_LISTS):
+            print(f"Database already has {book_count} books and {list_count} lists. Skipping seed.")
             return
+
+        # Clear partial data for clean re-seed
+        if book_count > 0 or list_count > 0:
+            print(f"Found partial data ({book_count} books, {list_count} lists). Clearing for clean seed...")
+            await session.execute(delete(ListItem))
+            await session.execute(delete(CuratedList))
+            await session.execute(delete(BookLink))
+            await session.execute(delete(Source))
+            await session.execute(delete(Book))
+            await session.commit()
+            print("Cleared partial data.")
 
         # Insert books
         book_map = {}

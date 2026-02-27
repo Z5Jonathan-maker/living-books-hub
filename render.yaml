@@ -1,16 +1,27 @@
+databases:
+  - name: living-books-db
+    plan: free
+    region: oregon
+    databaseName: living_books
+    user: living_books_user
+
 services:
   - type: web
     name: living-books-api
     runtime: python
     region: oregon
-    plan: starter
+    plan: free
     buildCommand: cd backend && pip install .
-    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    startCommand: cd backend && python -m alembic upgrade head && python -m scripts.seed && uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: living-books-db
+          property: connectionURI
       - key: FRONTEND_URL
-        sync: false
+        value: https://living-books-hub.vercel.app
+      - key: ADMIN_API_KEY
+        generateValue: true
       - key: STRIPE_SECRET_KEY
         sync: false
       - key: STRIPE_PUBLISHABLE_KEY
@@ -19,7 +30,5 @@ services:
         sync: false
       - key: STRIPE_PRICE_ID
         sync: false
-      - key: ADMIN_API_KEY
-        sync: false
       - key: PYTHON_VERSION
-        value: 3.11.7
+        value: "3.11.7"

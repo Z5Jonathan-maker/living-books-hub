@@ -123,3 +123,50 @@
 .animate-slide-up {
   animation: slideUp 0.5s ease-out;
 }
+
+/* Print styles */
+@media print {
+  header,
+  footer,
+  .no-print,
+  nav[class*="breadcrumb"],
+  button,
+  .btn-primary,
+  .btn-secondary,
+  .btn-gold {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  .card,
+  [class*="rounded-xl"] {
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .print-list > * {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 8pt;
+  }
+
+  a {
+    text-decoration: none !important;
+    color: inherit !important;
+  }
+
+  img {
+    max-width: 80px !important;
+    height: auto !important;
+  }
+}

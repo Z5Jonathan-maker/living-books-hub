@@ -1,9 +1,25 @@
 import Link from "next/link";
+import { EmailSignup } from "@/components/EmailSignup";
 
 export function Footer() {
   return (
     <footer className="bg-ink text-white/70 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* Email signup */}
+        <div className="mb-12 pb-10 border-b border-white/10">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-serif font-bold text-white">
+                Get Weekly Book Picks
+              </h3>
+              <p className="text-sm text-white/50 mt-1">
+                Free living book recommendations delivered to your inbox.
+              </p>
+            </div>
+            <EmailSignup variant="footer" source="footer" />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="md:col-span-1">
@@ -72,45 +88,53 @@ export function Footer() {
                   Living History
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/free-book-list"
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  Free Book List
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Age Groups */}
+          {/* Blog */}
           <div>
             <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-              By Age
+              Blog
             </h3>
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/search?age_range=3-7"
+                  href="/blog/best-living-books-by-grade-level"
                   className="text-sm hover:text-white transition-colors"
                 >
-                  Early Readers (3-7)
+                  Books by Grade Level
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/search?age_range=6-10"
+                  href="/blog/charlotte-mason-book-list-2026"
                   className="text-sm hover:text-white transition-colors"
                 >
-                  Elementary (6-10)
+                  CM Book List 2026
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/search?age_range=8-12"
+                  href="/blog/living-books-vs-textbooks"
                   className="text-sm hover:text-white transition-colors"
                 >
-                  Middle Grades (8-12)
+                  Living Books vs Textbooks
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/search?age_range=10-14"
+                  href="/blog/how-to-start-living-books-homeschool"
                   className="text-sm hover:text-white transition-colors"
                 >
-                  Upper Grades (10-14)
+                  How to Start
                 </Link>
               </li>
             </ul>
@@ -144,6 +168,14 @@ export function Footer() {
                   className="text-sm hover:text-white transition-colors"
                 >
                   About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  Blog
                 </Link>
               </li>
             </ul>

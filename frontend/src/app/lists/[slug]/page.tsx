@@ -1,17 +1,39 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getListDetail } from "@/lib/api";
-import { BookCard } from "@/components/BookCard";
+import { ItemListJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
+import { ShareButtons } from "@/components/ShareButtons";
+import { PrintListButton } from "@/components/PrintListButton";
 import type { Metadata } from "next";
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://livingbookshub.com";
 
 type Props = { params: { slug: string } };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const list = await getListDetail(params.slug);
+    const description =
+      list.description.length > 155
+        ? list.description.slice(0, 152) + "..."
+        : list.description;
     return {
       title: list.name,
-      description: list.description,
+      description,
+      alternates: {
+        canonical: `/lists/${list.slug}`,
+      },
+      openGraph: {
+        title: `${list.name} — Living Books Hub`,
+        description,
+        type: "article",
+      },
+      twitter: {
+        card: "summary",
+        title: list.name,
+        description,
+      },
     };
   } catch {
     return { title: "List Not Found" };
@@ -28,6 +50,15 @@ export default async function ListDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <ItemListJsonLd list={list} />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: SITE_URL },
+          { name: "Lists", url: `${SITE_URL}/lists` },
+          { name: list.name, url: `${SITE_URL}/lists/${list.slug}` },
+        ]}
+      />
+
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-warm-gray mb-8">
         <Link href="/" className="hover:text-ink transition-colors">
@@ -57,14 +88,22 @@ export default async function ListDetailPage({ params }: Props) {
         <p className="mt-4 text-lg text-warm-gray leading-relaxed">
           {list.description}
         </p>
-        <p className="mt-3 text-sm text-warm-gray/60">
-          {list.book_count} {list.book_count === 1 ? "book" : "books"} in this
-          collection
-        </p>
+        <div className="mt-3 flex items-center gap-4">
+          <p className="text-sm text-warm-gray/60">
+            {list.book_count} {list.book_count === 1 ? "book" : "books"} in this
+            collection
+          </p>
+          <ShareButtons
+            url={`${SITE_URL}/lists/${list.slug}`}
+            title={list.name}
+            description={list.description}
+          />
+          <PrintListButton />
+        </div>
       </div>
 
       {/* Books */}
-      <div className="space-y-6">
+      <div className="space-y-6 print-list">
         {list.items.map((item, index) => (
           <Link
             key={item.id}

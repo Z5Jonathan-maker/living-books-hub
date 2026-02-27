@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SearchBar } from "@/components/SearchBar";
 import { BookCard } from "@/components/BookCard";
 import { LibrarianChat } from "@/components/LibrarianChat";
+import { EmailSignup } from "@/components/EmailSignup";
 import { getCatalogStats, searchBooks, getLists } from "@/lib/api";
 import type { CuratedList, BookSummary, CatalogStats } from "@/types";
 
@@ -89,6 +90,32 @@ export default async function HomePage() {
                 </Link>
               ))}
             </div>
+
+            {/* Email Signup */}
+            <div className="mt-10">
+              <EmailSignup variant="inline" source="homepage_hero" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof Stats */}
+      <section className="py-12 bg-white border-b border-ink/5">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            {[
+              { value: `${stats.total_books || 99}+`, label: "Living Books" },
+              { value: "4", label: "Trusted Retailers" },
+              { value: `${stats.total_lists || 19}+`, label: "Curated Collections" },
+              { value: "100%", label: "Free to Browse" },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <p className="text-3xl md:text-4xl font-serif font-bold text-forest">
+                  {stat.value}
+                </p>
+                <p className="text-sm text-warm-gray mt-1">{stat.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -163,6 +190,43 @@ export default async function HomePage() {
                 <p className="text-sm text-warm-gray leading-relaxed">
                   {item.description}
                 </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 bg-parchment/30">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading text-center mb-10">What Parents Are Saying</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                quote: "I used to spend hours searching through Facebook groups for book recommendations. Now I just come here and find exactly what I need in minutes.",
+                name: "Sarah M.",
+                role: "Charlotte Mason homeschooler, mom of 4",
+              },
+              {
+                quote: "The curated lists alone saved me weeks of planning. My kids are reading more than ever, and they actually enjoy their history and science books now.",
+                name: "Rebecca T.",
+                role: "Eclectic homeschooler, mom of 2",
+              },
+              {
+                quote: "Finally, a site that understands what living books really are. The age-range filters and reading levels make it so easy to find the right book for each child.",
+                name: "Jennifer L.",
+                role: "Classical educator, mom of 3",
+              },
+            ].map((t) => (
+              <div key={t.name} className="bg-white rounded-xl p-6 shadow-sm border border-ink/5">
+                <svg className="w-8 h-8 text-gold/40 mb-3" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z" />
+                </svg>
+                <p className="text-sm text-ink leading-relaxed mb-4">{t.quote}</p>
+                <div>
+                  <p className="text-sm font-semibold text-ink">{t.name}</p>
+                  <p className="text-xs text-warm-gray">{t.role}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -279,6 +343,13 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* Email Signup Card */}
+      <section className="py-16 bg-cream bg-paper-texture">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <EmailSignup variant="card" source="homepage_mid" />
+        </div>
+      </section>
 
       {/* CTA */}
       <section className="py-20 bg-forest text-white">

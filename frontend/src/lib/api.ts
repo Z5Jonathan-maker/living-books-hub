@@ -83,3 +83,32 @@ export async function createCheckoutSession(
     }
   );
 }
+
+export async function subscribeNewsletter(data: {
+  email: string;
+  name?: string;
+  signup_source?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+}) {
+  return fetchAPI<{ success: boolean; message: string }>(
+    `/api/v1/newsletter/subscribe`,
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+    }
+  );
+}
+
+export async function trackAffiliateClick(data: {
+  book_id: number;
+  link_id?: number;
+  source_name: string;
+  referrer?: string;
+}) {
+  return fetchAPI<{ success: boolean }>(`/api/v1/tracking/click`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}

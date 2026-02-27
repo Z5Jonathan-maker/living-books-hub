@@ -185,3 +185,37 @@ class CatalogStats(BaseModel):
     subjects: list[str]
     age_ranges: list[str]
     reading_levels: list[str]
+
+
+# --- Newsletter ---
+class NewsletterSubscribeRequest(BaseModel):
+    email: str
+    name: str | None = None
+    signup_source: str | None = None
+    utm_source: str | None = None
+    utm_medium: str | None = None
+    utm_campaign: str | None = None
+
+
+class NewsletterSubscribeResponse(BaseModel):
+    success: bool
+    message: str
+
+
+class NewsletterExportResponse(BaseModel):
+    email: str
+    name: str | None
+    signup_source: str | None
+    created_at: datetime
+
+
+# --- Click Tracking ---
+class ClickTrackRequest(BaseModel):
+    book_id: int
+    link_id: int | None = None
+    source_name: str
+    referrer: str | None = None
+
+
+class ClickTrackResponse(BaseModel):
+    success: bool

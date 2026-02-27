@@ -3,19 +3,40 @@ import { notFound } from "next/navigation";
 import { getBook, getRelatedBooks } from "@/lib/api";
 import { BookCard } from "@/components/BookCard";
 import { AddToReadingPlan } from "@/components/AddToReadingPlan";
+import { BookJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
+import { ShareButtons } from "@/components/ShareButtons";
+import { AffiliateLinks } from "@/components/AffiliateLinks";
 import type { Metadata } from "next";
+
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://livingbookshub.com";
 
 type Props = { params: { id: string } };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const book = await getBook(Number(params.id));
+    const description =
+      book.description.length > 155
+        ? book.description.slice(0, 152) + "..."
+        : book.description;
     return {
       title: `${book.title} by ${book.author}`,
-      description: book.description,
+      description,
+      alternates: {
+        canonical: `/books/${book.id}`,
+      },
       openGraph: {
-        title: `${book.title} — Living Books Hub`,
-        description: book.description,
+        title: `${book.title} by ${book.author}`,
+        description,
+        type: "book" as const,
+        ...(book.cover_image_url ? { images: [book.cover_image_url] } : {}),
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${book.title} by ${book.author}`,
+        description,
+        ...(book.cover_image_url ? { images: [book.cover_image_url] } : {}),
       },
     };
   } catch {
@@ -37,6 +58,15 @@ export default async function BookDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <BookJsonLd book={book} />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: SITE_URL },
+          { name: "Books", url: `${SITE_URL}/search` },
+          { name: book.title, url: `${SITE_URL}/books/${book.id}` },
+        ]}
+      />
+
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-warm-gray mb-8">
         <Link href="/" className="hover:text-ink transition-colors">
@@ -138,8 +168,8 @@ export default async function BookDetailPage({ params }: Props) {
             ))}
           </div>
 
-          {/* Reading Plan Button */}
-          <div className="mt-6">
+          {/* Actions */}
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <AddToReadingPlan
               book={{
                 id: book.id,
@@ -152,6 +182,12 @@ export default async function BookDetailPage({ params }: Props) {
                 reading_level: book.reading_level,
                 popularity_score: book.popularity_score,
               }}
+            />
+            <ShareButtons
+              url={`${SITE_URL}/books/${book.id}`}
+              title={`${book.title} by ${book.author}`}
+              description={book.description}
+              image={book.cover_image_url}
             />
           </div>
 
@@ -193,70 +229,7 @@ export default async function BookDetailPage({ params }: Props) {
 
           {/* Where to get it */}
           {book.links.length > 0 && (
-            <div className="mt-10">
-              <h2 className="text-xl font-serif font-bold text-ink mb-4">
-                Where to Get This Book
-              </h2>
-              <div className="space-y-3">
-                {book.links.map((link) => (
-                  <a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between p-4 bg-white rounded-xl border border-ink/5 hover:border-sage/30 hover:shadow-md transition-all group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-parchment flex items-center justify-center">
-                        <svg
-                          className="w-5 h-5 text-warm-gray"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={1.5}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                          />
-                        </svg>
-                      </div>
-                      <div>
-                        <p className="font-medium text-ink group-hover:text-forest transition-colors">
-                          {link.source_name}
-                        </p>
-                        <p className="text-xs text-warm-gray capitalize">
-                          {link.link_type === "rent"
-                            ? "Borrow for free"
-                            : "Buy"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {link.price_hint && (
-                        <span className="text-sm font-semibold text-forest">
-                          {link.price_hint}
-                        </span>
-                      )}
-                      <svg
-                        className="w-5 h-5 text-warm-gray/30 group-hover:text-forest transition-colors"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                        />
-                      </svg>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
+            <AffiliateLinks bookId={book.id} links={book.links} />
           )}
 
           {/* Related Books */}

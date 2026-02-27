@@ -56,6 +56,12 @@ export function Header() {
               What Are Living Books?
             </Link>
             <Link
+              href="/blog"
+              className="px-4 py-2 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5 transition-all"
+            >
+              Blog
+            </Link>
+            <Link
               href="/reading-plan"
               className="px-4 py-2 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5 transition-all"
             >
@@ -124,6 +130,13 @@ export function Header() {
               className="block px-4 py-3 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5"
             >
               What Are Living Books?
+            </Link>
+            <Link
+              href="/blog"
+              onClick={() => setMobileOpen(false)}
+              className="block px-4 py-3 text-sm font-medium text-warm-gray hover:text-ink rounded-lg hover:bg-ink/5"
+            >
+              Blog
             </Link>
             <Link
               href="/subscribe"

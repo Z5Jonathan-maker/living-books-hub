@@ -1,15 +1,65 @@
 import Link from "next/link";
+import { searchBooks } from "@/lib/api";
+import { FAQJsonLd } from "@/components/JsonLd";
+import { BookCard } from "@/components/BookCard";
+import type { BookSummary } from "@/types";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "What Are Living Books?",
   description:
     "Discover what makes a living book different from a textbook, why Charlotte Mason championed them, and how they transform education for homeschool families.",
+  alternates: {
+    canonical: "/what-are-living-books",
+  },
 };
 
-export default function WhatAreLivingBooksPage() {
+const faqItems = [
+  {
+    question: "What is a living book?",
+    answer:
+      "A living book is a non-fiction or fiction book written by a single author who is passionate and knowledgeable about their subject. It uses literary language, tells a story or paints vivid pictures, and engages the reader's imagination — as opposed to committee-written textbooks that present dry facts.",
+  },
+  {
+    question: "Who invented the term 'living books'?",
+    answer:
+      "The term was popularized by Charlotte Mason (1842-1923), a British educator who believed children deserved the best ideas presented in the best language. She observed that children learned better from real books than from textbooks.",
+  },
+  {
+    question: "Are living books only for homeschoolers?",
+    answer:
+      "No. Living books are used by homeschool families (Charlotte Mason, classical, eclectic, and unschooling approaches), as well as traditional schools, reading groups, and families who simply want to foster a love of reading and learning.",
+  },
+  {
+    question: "How do I choose a living book?",
+    answer:
+      "Look for books written by a single passionate author (not a committee), books with a narrative voice that tells a story, and books that have stood the test of time. You can browse our curated library of 99+ living books at Living Books Hub, filtered by age, subject, and reading level.",
+  },
+  {
+    question: "Can living books replace textbooks entirely?",
+    answer:
+      "For many subjects — especially history, science, nature study, and literature — yes. However, for highly sequential, skill-based subjects like mathematics and grammar, a structured curriculum with living books as supplements often works best.",
+  },
+  {
+    question: "Where can I find living books?",
+    answer:
+      "Living Books Hub has a searchable database of 99+ living books with links to buy from Amazon, BookShop.org, ThriftBooks, and local libraries. Many living books are also available cheaply as used copies or free from public libraries.",
+  },
+];
+
+export default async function WhatAreLivingBooksPage() {
+  let exampleBooks: BookSummary[];
+  try {
+    const result = await searchBooks({ sort: "popularity", per_page: "4" });
+    exampleBooks = result.items;
+  } catch {
+    exampleBooks = [];
+  }
+
   return (
     <div className="animate-fade-in">
+      <FAQJsonLd questions={faqItems} />
+
       {/* Hero */}
       <section className="bg-paper-texture bg-cream py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -45,10 +95,12 @@ export default function WhatAreLivingBooksPage() {
                 learning.
               </p>
               <p>
-                Her insight was simple but revolutionary: <em>a child who reads a
-                passionate author telling the story of ancient Rome will remember
-                it for life. A child who reads a textbook chapter about ancient
-                Rome will forget it by Friday.</em>
+                Her insight was simple but revolutionary:{" "}
+                <em>
+                  a child who reads a passionate author telling the story of
+                  ancient Rome will remember it for life. A child who reads a
+                  textbook chapter about ancient Rome will forget it by Friday.
+                </em>
               </p>
               <p>
                 Living books aren&apos;t a genre. They span every subject —
@@ -61,6 +113,32 @@ export default function WhatAreLivingBooksPage() {
           </div>
         </div>
       </section>
+
+      {/* Example Books from DB */}
+      {exampleBooks.length > 0 && (
+        <section className="py-16 md:py-20 bg-cream bg-paper-texture">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl font-serif font-bold text-ink text-center mb-4">
+              Examples of Living Books
+            </h2>
+            <p className="text-center text-warm-gray mb-10 max-w-2xl mx-auto">
+              Here are a few beloved living books from our library. Each one is
+              written with passion and tells a story that makes its subject come
+              alive.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {exampleBooks.map((book) => (
+                <BookCard key={book.id} book={book} />
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+              <Link href="/search" className="btn-primary">
+                Browse All {99}+ Living Books
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Living vs Dead Books */}
       <section className="py-16 md:py-20 bg-parchment/30">
@@ -189,17 +267,17 @@ export default function WhatAreLivingBooksPage() {
               ideas, people, nature, and beauty.
             </p>
             <p>
-              Her methods include short lessons, narration (children telling back
-              what they&apos;ve heard), nature study, picture study, music
+              Her methods include short lessons, narration (children telling
+              back what they&apos;ve heard), nature study, picture study, music
               appreciation, handicrafts, and — at the center of everything —{" "}
               <strong className="text-ink">living books</strong>.
             </p>
             <p>
               Today, Charlotte Mason&apos;s ideas are used by hundreds of
-              thousands of homeschool families worldwide, as well as by a growing
-              number of schools and co-ops. But you don&apos;t have to follow
-              her method to benefit from living books — any family that values
-              real literature over dumbed-down textbooks will find them
+              thousands of homeschool families worldwide, as well as by a
+              growing number of schools and co-ops. But you don&apos;t have to
+              follow her method to benefit from living books — any family that
+              values real literature over dumbed-down textbooks will find them
               transformative.
             </p>
           </div>
@@ -231,12 +309,39 @@ export default function WhatAreLivingBooksPage() {
                 desc: "Strewing beautiful books around the house is a core unschooling strategy — and living books are perfect for this.",
               },
             ].map((item) => (
-              <div key={item.title} className="bg-white rounded-xl p-6 shadow-sm">
+              <div
+                key={item.title}
+                className="bg-white rounded-xl p-6 shadow-sm"
+              >
                 <h3 className="font-serif font-bold text-ink mb-2">
                   {item.title}
                 </h3>
                 <p className="text-sm text-warm-gray leading-relaxed">
                   {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 md:py-20 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-serif font-bold text-ink text-center mb-10">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-6">
+            {faqItems.map((faq) => (
+              <div
+                key={faq.question}
+                className="bg-parchment/30 rounded-xl p-6"
+              >
+                <h3 className="font-serif font-bold text-ink mb-2">
+                  {faq.question}
+                </h3>
+                <p className="text-sm text-warm-gray leading-relaxed">
+                  {faq.answer}
                 </p>
               </div>
             ))}
@@ -252,8 +357,8 @@ export default function WhatAreLivingBooksPage() {
           </h2>
           <p className="mt-4 text-lg text-white/70 max-w-2xl mx-auto">
             Browse our curated library of the world&apos;s best living books —
-            organized by age, subject, and reading level. Find the perfect books
-            for your family in minutes, not hours.
+            organized by age, subject, and reading level. Find the perfect
+            books for your family in minutes, not hours.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/search" className="btn-gold text-lg px-8 py-4">

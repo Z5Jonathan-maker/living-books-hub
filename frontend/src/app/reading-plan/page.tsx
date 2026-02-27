@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { BookSummary } from "@/types";
 
 interface ReadingPlanItem {
@@ -170,13 +171,15 @@ export default function ReadingPlanPage() {
               {/* Cover */}
               <Link
                 href={`/books/${item.book.id}`}
-                className="flex-shrink-0 w-16 h-20 bg-gradient-to-br from-parchment to-sage-light/20 rounded-lg overflow-hidden"
+                className="flex-shrink-0 w-16 h-20 bg-gradient-to-br from-parchment to-sage-light/20 rounded-lg overflow-hidden relative"
               >
                 {item.book.cover_image_url ? (
-                  <img
+                  <Image
                     src={item.book.cover_image_url}
                     alt={item.book.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="64px"
+                    className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">

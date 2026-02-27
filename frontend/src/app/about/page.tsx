@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "About Living Books Hub",
   description:
     "Learn about Living Books Hub — the first and definitive curated living books library for homeschool and alternative education families. We index and curate the world's best living books so you can find them in seconds.",
+  alternates: {
+    canonical: "/about",
+  },
   openGraph: {
     title: "About Living Books Hub",
     description:

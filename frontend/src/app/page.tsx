@@ -352,6 +352,66 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* From the Blog */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <h2 className="section-heading">From the Blog</h2>
+              <p className="section-subheading mt-2">
+                Guides, lists, and insights for your living books journey.
+              </p>
+            </div>
+            <Link
+              href="/blog"
+              className="hidden md:inline-flex btn-secondary text-sm"
+            >
+              All articles
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                title: "Best Living Books by Grade Level (2026)",
+                href: "/blog/best-living-books-by-grade-level",
+                desc: "Age-appropriate living book picks from preschool through high school.",
+              },
+              {
+                title: "Charlotte Mason Book List 2026",
+                href: "/blog/charlotte-mason-book-list-2026",
+                desc: "A comprehensive, updated Charlotte Mason reading list for every year.",
+              },
+              {
+                title: "Living Books vs Textbooks: Why It Matters",
+                href: "/blog/living-books-vs-textbooks",
+                desc: "How living books engage children differently and why families are switching.",
+              },
+              {
+                title: "How to Start a Living Books Homeschool",
+                href: "/blog/how-to-start-living-books-homeschool",
+                desc: "A step-by-step guide to building your curriculum around living books.",
+              },
+            ].map((post) => (
+              <Link
+                key={post.href}
+                href={post.href}
+                className="card group p-5 flex flex-col"
+              >
+                <h3 className="font-serif font-bold text-ink group-hover:text-forest transition-colors text-sm leading-snug">
+                  {post.title}
+                </h3>
+                <p className="mt-2 text-xs text-warm-gray line-clamp-3 flex-1">
+                  {post.desc}
+                </p>
+                <span className="mt-3 text-xs font-medium text-sage group-hover:text-forest transition-colors">
+                  Read more &rarr;
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-20 bg-forest text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

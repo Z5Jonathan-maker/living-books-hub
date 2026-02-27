@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getBook, getRelatedBooks, searchBooks } from "@/lib/api";
 import { BookCard } from "@/components/BookCard";
@@ -7,6 +8,7 @@ import { AddToReadingPlan } from "@/components/AddToReadingPlan";
 import { BookJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 import { ShareButtons } from "@/components/ShareButtons";
 import { AffiliateLinks } from "@/components/AffiliateLinks";
+import { EmailSignup } from "@/components/EmailSignup";
 import type { Metadata } from "next";
 
 const SITE_URL =
@@ -261,6 +263,13 @@ export default async function BookDetailPage({ params }: Props) {
               </div>
             </div>
           )}
+
+          {/* Email signup */}
+          <div className="mt-16">
+            <Suspense>
+              <EmailSignup variant="card" source="book-detail" />
+            </Suspense>
+          </div>
         </div>
       </div>
     </div>

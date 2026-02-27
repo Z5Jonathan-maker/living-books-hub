@@ -1,10 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getListDetail, getLists } from "@/lib/api";
 import { ItemListJsonLd, BreadcrumbJsonLd } from "@/components/JsonLd";
 import { ShareButtons } from "@/components/ShareButtons";
 import { PrintListButton } from "@/components/PrintListButton";
+import { EmailSignup } from "@/components/EmailSignup";
 import type { Metadata } from "next";
 
 const SITE_URL =
@@ -205,6 +207,13 @@ export default async function ListDetailPage({ params }: Props) {
             </div>
           </Link>
         ))}
+      </div>
+
+      {/* Email signup CTA */}
+      <div className="mt-16 max-w-xl mx-auto print:hidden">
+        <Suspense>
+          <EmailSignup variant="card" source={`list-${list.slug}`} />
+        </Suspense>
       </div>
 
       {/* Back to lists */}

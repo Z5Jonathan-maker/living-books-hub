@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "Curated Lists",
   description:
     "Hand-picked living book collections for every age, subject, and philosophy. Charlotte Mason, nature study, history, literature, and more.",
+  alternates: {
+    canonical: "/lists",
+  },
 };
 
 export default async function ListsPage() {

@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Browse Books",
   description:
     "Search and filter the world's best living books by age, subject, reading level, time period, and more.",
+  alternates: {
+    canonical: "/search",
+  },
 };
 
 async function SearchResults({

@@ -10,6 +10,9 @@ import type { Metadata } from "next";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://livingbookshub.com";
 
+export const dynamicParams = true;
+export const revalidate = 3600;
+
 type Props = { params: { slug: string } };
 
 export async function generateStaticParams() {

@@ -1,4 +1,5 @@
 import asyncio
+import ssl as ssl_module
 from logging.config import fileConfig
 
 from alembic import context
@@ -13,6 +14,14 @@ from app.models import book, list  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.async_database_url)
+
+# SSL config for Render PostgreSQL
+_connect_args = {}
+if "localhost" not in settings.async_database_url and "127.0.0.1" not in settings.async_database_url:
+    _ssl_ctx = ssl_module.create_default_context()
+    _ssl_ctx.check_hostname = False
+    _ssl_ctx.verify_mode = ssl_module.CERT_NONE
+    _connect_args["ssl"] = _ssl_ctx
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
@@ -45,6 +54,7 @@ async def run_async_migrations() -> None:
         configuration,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        connect_args=_connect_args,
     )
 
     async with connectable.connect() as connection:

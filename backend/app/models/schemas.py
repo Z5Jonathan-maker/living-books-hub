@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 
 # --- Book Schemas ---
@@ -189,7 +189,7 @@ class CatalogStats(BaseModel):
 
 # --- Newsletter ---
 class NewsletterSubscribeRequest(BaseModel):
-    email: str
+    email: EmailStr
     name: str | None = None
     signup_source: str | None = None
     utm_source: str | None = None

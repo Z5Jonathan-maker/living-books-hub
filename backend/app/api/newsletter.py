@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from sqlalchemy import select, func
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.rate_limit import newsletter_limiter
 from app.models.subscriber import EmailSubscriber
 from app.models.schemas import (
     NewsletterSubscribeRequest,
@@ -17,9 +18,11 @@ router = APIRouter(prefix="/api/v1/newsletter", tags=["newsletter"])
 
 @router.post("/subscribe", response_model=NewsletterSubscribeResponse)
 async def subscribe(
+    request: Request,
     req: NewsletterSubscribeRequest,
     db: AsyncSession = Depends(get_db),
 ):
+    newsletter_limiter.check(request)
     """Subscribe to the newsletter. Idempotent — re-subscribing the same email is a no-op."""
     stmt = (
         pg_insert(EmailSubscriber)

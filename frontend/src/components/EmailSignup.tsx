@@ -1,12 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { subscribeNewsletter } from "@/lib/api";
 
 type Variant = "inline" | "card" | "footer";
 
-export function EmailSignup({
+export function EmailSignup(props: { variant?: Variant; source?: string }) {
+  return (
+    <Suspense fallback={<EmailSignupFallback variant={props.variant} />}>
+      <EmailSignupInner {...props} />
+    </Suspense>
+  );
+}
+
+function EmailSignupFallback({ variant }: { variant?: Variant }) {
+  if (variant === "footer") {
+    return (
+      <div className="flex gap-2 max-w-md">
+        <input
+          type="email"
+          placeholder="Your email address"
+          className="flex-1 px-3 py-2 text-sm bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-white/40"
+          disabled
+        />
+        <button className="px-4 py-2 text-sm font-medium bg-sage text-white rounded-lg opacity-50" disabled>
+          Join
+        </button>
+      </div>
+    );
+  }
+  return null;
+}
+
+function EmailSignupInner({
   variant = "inline",
   source = "website",
 }: {

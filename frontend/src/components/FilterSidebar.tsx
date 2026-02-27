@@ -1,10 +1,19 @@
 "use client";
 
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import type { FilterOptions } from "@/types";
 
 export function FilterSidebar({ filters }: { filters: FilterOptions }) {
+  return (
+    <Suspense fallback={null}>
+      <FilterSidebarInner filters={filters} />
+    </Suspense>
+  );
+}
+
+function FilterSidebarInner({ filters }: { filters: FilterOptions }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 

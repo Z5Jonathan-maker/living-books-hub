@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.api.books import _ensure_cover_url
 from app.core.auth import require_user
 from app.core.database import get_db
 from app.models.book import Book
@@ -18,7 +19,6 @@ from app.models.schemas import (
     ReadingPlanOut,
 )
 from app.models.user import User
-from app.api.books import _ensure_cover_url
 
 router = APIRouter(prefix="/api/v1/users/plans", tags=["reading-plans"])
 
@@ -30,7 +30,9 @@ async def list_plans(
 ):
     """List all reading plans for the current user."""
     result = await db.execute(
-        select(ReadingPlan).where(ReadingPlan.user_id == user.id).order_by(ReadingPlan.created_at.desc())
+        select(ReadingPlan)
+        .where(ReadingPlan.user_id == user.id)
+        .order_by(ReadingPlan.created_at.desc())
     )
     plans = result.scalars().all()
 

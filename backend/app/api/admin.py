@@ -1,8 +1,8 @@
 import csv
+import hmac
 import io
 
-from fastapi import APIRouter, Depends, HTTPException, Header, UploadFile, File
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, File, Header, HTTPException, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
@@ -12,7 +12,6 @@ from app.models.list import CuratedList, ListItem
 from app.models.schemas import (
     BookCreate,
     BookLinkCreate,
-    BookOut,
     CuratedListCreate,
     CuratedListOut,
     ListItemCreate,
@@ -24,7 +23,7 @@ router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
 
 
 def verify_admin(x_api_key: str = Header(...)):
-    if x_api_key != settings.admin_api_key:
+    if not hmac.compare_digest(x_api_key, settings.admin_api_key):
         raise HTTPException(status_code=403, detail="Invalid admin API key")
     return True
 
@@ -77,7 +76,9 @@ async def import_books_csv(
                 awards=awards,
                 popularity_score=float(row.get("popularity_score", 0)),
                 page_count=int(row["page_count"]) if row.get("page_count") else None,
-                publication_year=int(row["publication_year"]) if row.get("publication_year") else None,
+                publication_year=(
+                    int(row["publication_year"]) if row.get("publication_year") else None
+                ),
                 publisher=row.get("publisher") or None,
             )
             db.add(book)

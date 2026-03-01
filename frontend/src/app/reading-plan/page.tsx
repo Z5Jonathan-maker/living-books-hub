@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 import { getPlans, getPlanDetail, updatePlanItem, deletePlanItem, importLocalPlan } from "@/lib/api";
+import { LOCAL_PLAN_KEY } from "@/lib/constants";
 import type { BookSummary, ReadingPlan, ReadingPlanDetail } from "@/types";
 
 interface LocalPlanItem {
@@ -18,14 +19,14 @@ interface LocalPlanItem {
 function getStoredPlan(): LocalPlanItem[] {
   if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(localStorage.getItem("living-books-reading-plan") || "[]");
+    return JSON.parse(localStorage.getItem(LOCAL_PLAN_KEY) || "[]");
   } catch {
     return [];
   }
 }
 
 function storePlan(plan: LocalPlanItem[]) {
-  localStorage.setItem("living-books-reading-plan", JSON.stringify(plan));
+  localStorage.setItem(LOCAL_PLAN_KEY, JSON.stringify(plan));
 }
 
 function ReadingPlanInner() {
@@ -116,9 +117,12 @@ function ReadingPlanInner() {
   );
 
   // API mode: update item status
+  const [apiError, setApiError] = useState<string | null>(null);
+
   const updateApiStatus = useCallback(
     async (itemId: number, status: string) => {
       if (!activePlan) return;
+      setApiError(null);
       try {
         await updatePlanItem(activePlan.id, itemId, { status });
         setActivePlan((prev) =>
@@ -132,7 +136,7 @@ function ReadingPlanInner() {
             : null
         );
       } catch {
-        // silently fail
+        setApiError("Failed to update status. Please try again.");
       }
     },
     [activePlan]
@@ -141,6 +145,7 @@ function ReadingPlanInner() {
   const removeApiItem = useCallback(
     async (itemId: number) => {
       if (!activePlan) return;
+      setApiError(null);
       try {
         await deletePlanItem(activePlan.id, itemId);
         setActivePlan((prev) =>
@@ -149,7 +154,7 @@ function ReadingPlanInner() {
             : null
         );
       } catch {
-        // silently fail
+        setApiError("Failed to remove item. Please try again.");
       }
     },
     [activePlan]
@@ -206,6 +211,12 @@ function ReadingPlanInner() {
             <span className="badge-gold text-xs">AI Generated</span>
           )}
         </div>
+
+        {apiError && (
+          <div className="mt-3 p-3 bg-rust/10 border border-rust/20 rounded-lg text-sm text-rust">
+            {apiError}
+          </div>
+        )}
 
         {/* Plan selector for logged-in users with multiple plans */}
         {user && plans.length > 1 && (

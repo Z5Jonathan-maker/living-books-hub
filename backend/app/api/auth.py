@@ -1,13 +1,14 @@
 import datetime
 import secrets
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth import create_access_token, get_current_user, require_user
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.rate_limit import auth_limiter
 from app.models.schemas import MagicLinkRequest, MagicLinkResponse, UserOut, VerifyTokenRequest
 from app.models.user import User
 from app.services.email import send_magic_link_email
@@ -17,10 +18,12 @@ router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 
 @router.post("/magic-link", response_model=MagicLinkResponse)
 async def request_magic_link(
+    request: Request,
     req: MagicLinkRequest,
     db: AsyncSession = Depends(get_db),
 ):
     """Send a magic link email. Creates user if they don't exist."""
+    auth_limiter.check(request)
     email = req.email.lower().strip()
 
     # Find or create user
@@ -36,7 +39,7 @@ async def request_magic_link(
     token = secrets.token_urlsafe(48)
     user.magic_link_token = token
     user.magic_link_expires_at = datetime.datetime.now(
-        datetime.timezone.utc
+        datetime.UTC
     ) + datetime.timedelta(minutes=settings.magic_link_expire_minutes)
     await db.commit()
 
@@ -64,7 +67,7 @@ async def verify_magic_link(
 
     if (
         user.magic_link_expires_at is None
-        or user.magic_link_expires_at < datetime.datetime.now(datetime.timezone.utc)
+        or user.magic_link_expires_at < datetime.datetime.now(datetime.UTC)
     ):
         raise HTTPException(status_code=400, detail="Link has expired. Please request a new one.")
 

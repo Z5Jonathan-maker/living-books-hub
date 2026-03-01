@@ -57,6 +57,6 @@ class ReadingPlanItem(Base):
     book: Mapped["Book"] = relationship()
 
 
-from app.models.user import User  # noqa: E402
-from app.models.child import Child  # noqa: E402
 from app.models.book import Book  # noqa: E402
+from app.models.child import Child  # noqa: E402
+from app.models.user import User  # noqa: E402

@@ -18,7 +18,7 @@ export default function SubscribePage() {
       }
     } catch (err) {
       alert(
-        "Stripe is not configured yet. Set STRIPE_SECRET_KEY and STRIPE_PRICE_ID in the backend .env file.",
+        "Subscriptions are not available yet. Please try again later or contact support.",
       );
     } finally {
       setLoading(false);

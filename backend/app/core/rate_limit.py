@@ -1,5 +1,6 @@
 import time
 from collections import defaultdict
+
 from fastapi import HTTPException, Request
 
 
@@ -12,10 +13,13 @@ class RateLimiter:
         self._requests: dict[str, list[float]] = defaultdict(list)
 
     def _get_client_ip(self, request: Request) -> str:
-        forwarded = request.headers.get("x-forwarded-for")
-        if forwarded:
-            return forwarded.split(",")[0].strip()
-        return request.client.host if request.client else "unknown"
+        client_ip = request.client.host if request.client else "unknown"
+        # Only trust X-Forwarded-For from loopback (behind reverse proxy)
+        if client_ip in ("127.0.0.1", "::1"):
+            forwarded = request.headers.get("x-forwarded-for")
+            if forwarded:
+                return forwarded.split(",")[0].strip()
+        return client_ip
 
     def check(self, request: Request) -> None:
         ip = self._get_client_ip(request)
@@ -37,3 +41,5 @@ class RateLimiter:
 # Shared instances
 newsletter_limiter = RateLimiter(max_requests=5, window_seconds=60)
 tracking_limiter = RateLimiter(max_requests=60, window_seconds=60)
+auth_limiter = RateLimiter(max_requests=5, window_seconds=300)
+librarian_limiter = RateLimiter(max_requests=10, window_seconds=60)

@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.models.book import Book
 from app.models.list import CuratedList
-from app.models.subscriber import EmailSubscriber
 from app.models.schemas import CatalogStats
+from app.models.subscriber import EmailSubscriber
 
 router = APIRouter(prefix="/api/v1/stats", tags=["stats"])
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { requestMagicLink } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,10 +14,13 @@ export default function LoginPage() {
   const { user } = useAuth();
 
   // If already logged in, redirect
-  if (user) {
-    router.push("/dashboard");
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
+
+  if (user) return null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

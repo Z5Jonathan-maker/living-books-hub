@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import get_current_user, require_user
+from app.core.auth import require_user
 from app.core.database import get_db
 from app.models.book import Book
 from app.models.review import BookReview
@@ -58,7 +58,10 @@ async def get_review_summary(
     row = result.one()
     avg_rating = float(row[0]) if row[0] else None
     count = row[1]
-    return ReviewSummary(avg_rating=round(avg_rating, 1) if avg_rating else None, review_count=count)
+    return ReviewSummary(
+        avg_rating=round(avg_rating, 1) if avg_rating else None,
+        review_count=count,
+    )
 
 
 @router.post("/{book_id}/reviews", response_model=ReviewOut, status_code=201)

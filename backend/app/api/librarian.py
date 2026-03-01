@@ -1,15 +1,16 @@
-from fastapi import APIRouter, Cookie, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.books import _ensure_cover_url
 from app.core.auth import get_current_user
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.rate_limit import librarian_limiter
 from app.models.book import Book
 from app.models.child import Child
 from app.models.schemas import BookSummary, LibrarianRequest, LibrarianResponse
 from app.models.user import User
-from app.api.books import _ensure_cover_url
 from app.services.ai import ask_librarian_ai
 
 router = APIRouter(prefix="/api/v1/librarian", tags=["librarian"])
@@ -25,7 +26,6 @@ async def _deterministic_suggestions(
     query = select(Book)
 
     # Simple keyword matching against subjects, title, description
-    search = f"%{msg.split()[0] if msg.split() else ''}%"
     if len(msg) > 2:
         query = query.where(
             (Book.title.ilike(f"%{msg}%"))
@@ -63,6 +63,7 @@ async def _deterministic_suggestions(
 
 @router.post("", response_model=LibrarianResponse)
 async def ask_librarian(
+    request: Request,
     req: LibrarianRequest,
     db: AsyncSession = Depends(get_db),
     user: User | None = Depends(get_current_user),
@@ -72,6 +73,7 @@ async def ask_librarian(
     Uses Groq Llama 3.3 70B when available, with family context if logged in.
     Falls back to deterministic database-driven recommendations.
     """
+    librarian_limiter.check(request)
     if settings.groq_enabled and settings.groq_api_key:
         try:
             # Get books for context

@@ -20,7 +20,8 @@ def send_magic_link_email(to_email: str, magic_link_url: str) -> bool:
             "to": [to_email],
             "subject": "Sign in to Living Books Hub",
             "html": f"""
-            <div style="font-family: Georgia, serif; max-width: 500px; margin: 0 auto; padding: 40px 20px;">
+            <div style="font-family: Georgia, serif; max-width: 500px;
+                 margin: 0 auto; padding: 40px 20px;">
                 <h1 style="color: #2D5F2D; font-size: 24px;">Welcome to Living Books Hub</h1>
                 <p style="color: #555; line-height: 1.6;">
                     Click the button below to sign in. This link expires in 15 minutes.

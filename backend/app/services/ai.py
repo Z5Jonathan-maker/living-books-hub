@@ -32,8 +32,9 @@ def generate_curriculum(
     subject_prefs = preferences.get("subjects", []) if preferences else []
     period_prefs = preferences.get("time_periods", []) if preferences else []
 
-    system_prompt = f"""You are an expert homeschool curriculum designer specializing in "living books" —
-books written by passionate authors that bring subjects alive through literary storytelling.
+    system_prompt = f"""You are an expert homeschool curriculum designer \
+specializing in "living books" — books written by passionate authors \
+that bring subjects alive through literary storytelling.
 
 You are creating a full-year reading plan for a child. You MUST ONLY recommend books from the
 catalog provided below. Do NOT invent books that are not in this list.
@@ -52,7 +53,9 @@ OUTPUT FORMAT: Return valid JSON matching this structure exactly:
         {{
           "week_number": 1,
           "books": [
-            {{"title": "exact title from catalog", "author": "exact author", "notes": "1-2 sentences on why this book fits and how to use it"}}
+            {{"title": "exact title from catalog", \
+"author": "exact author", \
+"notes": "1-2 sentences on why this book fits and how to use it"}}
           ]
         }}
       ]

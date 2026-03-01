@@ -3,11 +3,10 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.api.books import _ensure_cover_url
 from app.core.database import get_db
-from app.models.book import Book
 from app.models.list import CuratedList, ListItem
 from app.models.schemas import BookSummary, CuratedListDetail, CuratedListOut, ListItemOut
-from app.api.books import _ensure_cover_url
 
 router = APIRouter(prefix="/api/v1/lists", tags=["curated lists"])
 

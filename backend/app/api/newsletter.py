@@ -1,17 +1,19 @@
+import hmac
+
 from fastapi import APIRouter, Depends, Header, HTTPException, Request
-from sqlalchemy import select, func
+from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.rate_limit import newsletter_limiter
-from app.models.subscriber import EmailSubscriber
 from app.models.schemas import (
+    NewsletterExportResponse,
     NewsletterSubscribeRequest,
     NewsletterSubscribeResponse,
-    NewsletterExportResponse,
 )
+from app.models.subscriber import EmailSubscriber
 
 router = APIRouter(prefix="/api/v1/newsletter", tags=["newsletter"])
 
@@ -53,7 +55,7 @@ async def export_subscribers(
     db: AsyncSession = Depends(get_db),
 ):
     """Admin-only export of all subscribers."""
-    if x_admin_key != settings.admin_api_key:
+    if not hmac.compare_digest(x_admin_key, settings.admin_api_key):
         raise HTTPException(status_code=403, detail="Invalid admin key")
 
     result = await db.execute(

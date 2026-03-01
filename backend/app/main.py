@@ -4,8 +4,19 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import (
-    admin, auth, books, children, curriculum, librarian,
-    lists, newsletter, plans, reviews, stats, stripe_routes, tracking,
+    admin,
+    auth,
+    books,
+    children,
+    curriculum,
+    librarian,
+    lists,
+    newsletter,
+    plans,
+    reviews,
+    stats,
+    stripe_routes,
+    tracking,
 )
 from app.core.config import settings
 
@@ -23,6 +34,9 @@ app = FastAPI(
     ),
     version="1.0.0",
     lifespan=lifespan,
+    docs_url="/docs" if settings.debug else None,
+    redoc_url="/redoc" if settings.debug else None,
+    openapi_url="/openapi.json" if settings.debug else None,
 )
 
 # CORS

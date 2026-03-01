@@ -39,7 +39,8 @@ async def build_curriculum(
     child_age = current_year - child.birth_year if child.birth_year else 8
 
     # Build catalog context — filter by approximate age range
-    all_books = (await db.execute(select(Book).order_by(Book.popularity_score.desc()))).scalars().all()
+    stmt = select(Book).order_by(Book.popularity_score.desc())
+    all_books = (await db.execute(stmt)).scalars().all()
 
     # Build condensed catalog string
     catalog_lines = []

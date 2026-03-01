@@ -8,6 +8,10 @@ vi.mock("next/navigation", () => ({
   usePathname: () => "/",
 }));
 
+vi.mock("@/contexts/AuthContext", () => ({
+  useAuth: () => ({ user: null, loading: false, refresh: vi.fn(), setUser: vi.fn() }),
+}));
+
 describe("Header", () => {
   it("renders the logo text", () => {
     render(<Header />);

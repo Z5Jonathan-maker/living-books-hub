@@ -13,12 +13,15 @@ class Settings(BaseSettings):
     llm_enabled: bool = False
     anthropic_api_key: str = ""
 
-    admin_api_key: str = "change-me-in-production"
+    admin_api_key: str = ""
 
     # Auth
-    jwt_secret_key: str = "change-me-in-production-jwt-secret"
+    jwt_secret_key: str = ""
     jwt_algorithm: str = "HS256"
-    jwt_access_token_expire_minutes: int = 60 * 24 * 7  # 7 days
+    jwt_access_token_expire_minutes: int = 60 * 24  # 24 hours
+
+    # Debug mode (controls /docs exposure)
+    debug: bool = False
     magic_link_expire_minutes: int = 15
 
     # Email (Resend)

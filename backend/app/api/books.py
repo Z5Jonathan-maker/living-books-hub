@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import func, select, text, cast, String
+from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.core.database import get_db
-from app.models.book import Book, BookLink, Source
-from app.models.schemas import BookOut, BookSearchParams, BookSummary, BookLinkOut, PaginatedBooks
+from app.models.book import Book, BookLink
+from app.models.schemas import BookLinkOut, BookOut, BookSummary, PaginatedBooks
 
 router = APIRouter(prefix="/api/v1/books", tags=["books"])
 

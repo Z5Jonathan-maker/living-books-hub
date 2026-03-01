@@ -11,8 +11,6 @@ connect_args = {}
 _db_url = settings.async_database_url
 if "localhost" not in _db_url and "127.0.0.1" not in _db_url:
     ssl_ctx = ssl_module.create_default_context()
-    ssl_ctx.check_hostname = False
-    ssl_ctx.verify_mode = ssl_module.CERT_NONE
     connect_args["ssl"] = ssl_ctx
 
 engine = create_async_engine(

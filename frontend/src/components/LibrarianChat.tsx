@@ -76,6 +76,7 @@ export function LibrarianChat() {
         </div>
         <button
           onClick={() => setOpen(false)}
+          aria-label="Close librarian chat"
           className="p-1 hover:bg-white/10 rounded-lg transition-colors"
         >
           <svg
@@ -83,6 +84,7 @@ export function LibrarianChat() {
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -202,6 +204,7 @@ export function LibrarianChat() {
           <button
             type="submit"
             disabled={loading || !message.trim()}
+            aria-label="Send message"
             className="btn-primary py-2.5 px-4 disabled:opacity-50"
           >
             <svg

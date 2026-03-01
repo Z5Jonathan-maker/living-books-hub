@@ -30,5 +30,5 @@ class Child(Base):
     reading_plans: Mapped[list["ReadingPlan"]] = relationship(back_populates="child")
 
 
-from app.models.user import User  # noqa: E402
 from app.models.reading_plan import ReadingPlan  # noqa: E402
+from app.models.user import User  # noqa: E402

@@ -12,7 +12,7 @@ from app.models.user import User
 
 def create_access_token(user_id: int, email: str) -> str:
     """Create a JWT access token."""
-    expire = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
+    expire = datetime.datetime.now(datetime.UTC) + datetime.timedelta(
         minutes=settings.jwt_access_token_expire_minutes
     )
     payload = {"sub": str(user_id), "email": email, "exp": expire}

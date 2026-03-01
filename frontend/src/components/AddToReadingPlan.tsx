@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { BookSummary } from "@/types";
+import { LOCAL_PLAN_KEY } from "@/lib/constants";
 
 export function AddToReadingPlan({ book }: { book: BookSummary }) {
   const [added, setAdded] = useState(false);
@@ -9,7 +10,7 @@ export function AddToReadingPlan({ book }: { book: BookSummary }) {
   useEffect(() => {
     try {
       const plan = JSON.parse(
-        localStorage.getItem("living-books-reading-plan") || "[]",
+        localStorage.getItem(LOCAL_PLAN_KEY) || "[]",
       );
       setAdded(plan.some((item: { book: BookSummary }) => item.book.id === book.id));
     } catch {
@@ -20,7 +21,7 @@ export function AddToReadingPlan({ book }: { book: BookSummary }) {
   const handleAdd = () => {
     try {
       const plan = JSON.parse(
-        localStorage.getItem("living-books-reading-plan") || "[]",
+        localStorage.getItem(LOCAL_PLAN_KEY) || "[]",
       );
       if (plan.some((item: { book: BookSummary }) => item.book.id === book.id)) {
         // Remove
@@ -28,7 +29,7 @@ export function AddToReadingPlan({ book }: { book: BookSummary }) {
           (item: { book: BookSummary }) => item.book.id !== book.id,
         );
         localStorage.setItem(
-          "living-books-reading-plan",
+          LOCAL_PLAN_KEY,
           JSON.stringify(updated),
         );
         setAdded(false);
@@ -41,7 +42,7 @@ export function AddToReadingPlan({ book }: { book: BookSummary }) {
           notes: "",
         });
         localStorage.setItem(
-          "living-books-reading-plan",
+          LOCAL_PLAN_KEY,
           JSON.stringify(plan),
         );
         setAdded(true);

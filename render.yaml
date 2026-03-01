@@ -30,6 +30,8 @@ services:
         sync: false
       - key: STRIPE_PRICE_ID
         sync: false
+      - key: STRIPE_ANNUAL_PRICE_ID
+        sync: false
       - key: JWT_SECRET_KEY
         generateValue: true
       - key: RESEND_API_KEY

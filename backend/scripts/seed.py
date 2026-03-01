@@ -2442,23 +2442,6 @@ BOOKS = [
         "publisher": "Yearling",
     },
     {
-        "title": "Number the Stars",
-        "author": "Lois Lowry",
-        "description": "Ten-year-old Annemarie Johansen must find the courage to help her best friend escape the Nazis in occupied Copenhagen — based on true events of the Danish resistance.",
-        "reading_level": "intermediate",
-        "age_range": "9-12",
-        "subjects": ["history", "World War II", "character", "courage"],
-        "time_period": "20th century",
-        "region": "Europe",
-        "isbn": "9780547577098",
-        "language": "English",
-        "awards": ["Newbery Medal"],
-        "popularity_score": 90,
-        "page_count": 160,
-        "publication_year": 1989,
-        "publisher": "Houghton Mifflin",
-    },
-    {
         "title": "Snow Treasure",
         "author": "Marie McSwigan",
         "description": "Norwegian children use their sleds to smuggle nine million dollars in gold bullion past Nazi soldiers to a waiting ship — based on an incredible true story.",
@@ -3171,9 +3154,15 @@ async def seed():
             await session.commit()
             print("Cleared partial data.")
 
-        # Insert books
+        # Insert books (deduplicate by title)
         book_map = {}
+        seen_titles = set()
+        skipped = 0
         for data in BOOKS:
+            if data["title"] in seen_titles:
+                skipped += 1
+                continue
+            seen_titles.add(data["title"])
             book_data = dict(data)
             if not book_data.get("cover_image_url") and book_data.get("isbn"):
                 book_data["cover_image_url"] = f"https://covers.openlibrary.org/b/isbn/{book_data['isbn']}-L.jpg"
@@ -3181,7 +3170,7 @@ async def seed():
             session.add(book)
             await session.flush()
             book_map[data["title"]] = book.id
-        print(f"Inserted {len(BOOKS)} books.")
+        print(f"Inserted {len(seen_titles)} books ({skipped} duplicates skipped).")
 
         # Insert sources
         source_map = {}

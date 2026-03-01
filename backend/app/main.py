@@ -98,7 +98,7 @@ async def api_root():
 async def trigger_seed(x_api_key: str = fastapi.Header(...)):
     """Admin-only: trigger database seed. Returns result or error."""
     import hmac
-    if not hmac.compare_digest(x_api_key, settings.admin_api_key):
+    if not settings.admin_api_key or not hmac.compare_digest(x_api_key, settings.admin_api_key):
         raise fastapi.HTTPException(status_code=403, detail="Invalid admin key")
     import traceback
     try:

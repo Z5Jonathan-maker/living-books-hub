@@ -23,7 +23,7 @@ router = APIRouter(prefix="/api/v1/admin", tags=["admin"])
 
 
 def verify_admin(x_api_key: str = Header(...)):
-    if not hmac.compare_digest(x_api_key, settings.admin_api_key):
+    if not settings.admin_api_key or not hmac.compare_digest(x_api_key, settings.admin_api_key):
         raise HTTPException(status_code=403, detail="Invalid admin API key")
     return True
 

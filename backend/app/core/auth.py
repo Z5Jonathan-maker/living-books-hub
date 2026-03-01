@@ -10,18 +10,21 @@ from app.core.database import get_db
 from app.models.user import User
 
 
+JWT_ALGORITHM = "HS256"
+
+
 def create_access_token(user_id: int, email: str) -> str:
     """Create a JWT access token."""
     expire = datetime.datetime.now(datetime.UTC) + datetime.timedelta(
         minutes=settings.jwt_access_token_expire_minutes
     )
     payload = {"sub": str(user_id), "email": email, "exp": expire}
-    return jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
+    return jwt.encode(payload, settings.jwt_secret_key, algorithm=JWT_ALGORITHM)
 
 
 def decode_token(token: str) -> dict:
     """Decode and validate a JWT token."""
-    return jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
+    return jwt.decode(token, settings.jwt_secret_key, algorithms=[JWT_ALGORITHM])
 
 
 async def get_current_user(

@@ -279,18 +279,15 @@ async def import_local_plan(
 
     added = 0
     for item_data in req.items:
-        book_id = item_data.get("book_id")
-        if not book_id:
-            continue
         # Verify book exists
-        book_result = await db.execute(select(Book).where(Book.id == book_id))
+        book_result = await db.execute(select(Book).where(Book.id == item_data.book_id))
         if not book_result.scalar_one_or_none():
             continue
         item = ReadingPlanItem(
             plan_id=plan.id,
-            book_id=book_id,
-            status=item_data.get("status", "to-read"),
-            notes=item_data.get("notes"),
+            book_id=item_data.book_id,
+            status=item_data.status,
+            notes=item_data.notes,
         )
         db.add(item)
         added += 1

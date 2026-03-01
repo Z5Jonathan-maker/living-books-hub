@@ -1,3 +1,6 @@
+import warnings
+
+from pydantic import model_validator
 from pydantic_settings import BaseSettings
 
 
@@ -18,7 +21,6 @@ class Settings(BaseSettings):
 
     # Auth
     jwt_secret_key: str = ""
-    jwt_algorithm: str = "HS256"
     jwt_access_token_expire_minutes: int = 60 * 24  # 24 hours
 
     # Debug mode (controls /docs exposure)
@@ -34,6 +36,21 @@ class Settings(BaseSettings):
     groq_enabled: bool = False
 
     model_config = {"env_file": ".env", "extra": "ignore"}
+
+    @model_validator(mode="after")
+    def _validate_secrets(self) -> "Settings":
+        """Prevent empty-string secrets from silently passing auth checks."""
+        if not self.admin_api_key:
+            warnings.warn(
+                "ADMIN_API_KEY is empty — admin endpoints will reject all requests",
+                stacklevel=2,
+            )
+        if not self.jwt_secret_key:
+            warnings.warn(
+                "JWT_SECRET_KEY is empty — authentication will not work",
+                stacklevel=2,
+            )
+        return self
 
     @property
     def async_database_url(self) -> str:

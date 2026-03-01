@@ -157,7 +157,7 @@ class PaginatedBooks(BaseModel):
 
 # --- Librarian Chat ---
 class LibrarianRequest(BaseModel):
-    message: str
+    message: str = Field(max_length=2000)
     context: dict | None = None
 
 
@@ -174,9 +174,8 @@ class CheckoutSessionCreate(BaseModel):
 
 
 class SubscriptionStatus(BaseModel):
-    tier: str  # "free" or "paid"
+    tier: str  # "free" or "premium"
     active: bool
-    stripe_customer_id: str | None = None
 
 
 # --- Stats ---
@@ -324,10 +323,17 @@ class ReadingPlanDetail(ReadingPlanOut):
     items: list[ReadingPlanItemOut] = []
 
 
+class ImportLocalPlanItem(BaseModel):
+    """A single item in an imported reading plan."""
+    book_id: int
+    status: str = "not_started"
+    notes: str | None = None
+
+
 class ImportLocalPlanRequest(BaseModel):
     """Import a localStorage reading plan to the server."""
     name: str = "My Reading Plan"
-    items: list[dict]  # [{book_id, status, notes}]
+    items: list[ImportLocalPlanItem]
 
 
 # --- Book Reviews ---

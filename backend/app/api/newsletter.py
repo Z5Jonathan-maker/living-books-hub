@@ -1,6 +1,8 @@
 import hashlib
 import hmac
+import html as html_mod
 from datetime import datetime, timezone
+from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from sqlalchemy import select
@@ -16,6 +18,13 @@ from app.models.schemas import (
     NewsletterSubscribeResponse,
 )
 from app.models.subscriber import EmailSubscriber
+
+
+def _unsubscribe_sig(email: str) -> str:
+    """Generate HMAC-SHA256 signature for unsubscribe links (full 256-bit)."""
+    return hmac.new(
+        settings.admin_api_key.encode(), email.encode(), hashlib.sha256
+    ).hexdigest()
 
 router = APIRouter(prefix="/api/v1/newsletter", tags=["newsletter"])
 
@@ -64,7 +73,7 @@ async def export_subscribers(
     db: AsyncSession = Depends(get_db),
 ):
     """Admin-only export of all subscribers."""
-    if not hmac.compare_digest(x_admin_key, settings.admin_api_key):
+    if not settings.admin_api_key or not hmac.compare_digest(x_admin_key, settings.admin_api_key):
         raise HTTPException(status_code=403, detail="Invalid admin key")
 
     result = await db.execute(
@@ -89,9 +98,8 @@ async def unsubscribe(
     db: AsyncSession = Depends(get_db),
 ):
     """HMAC-secured unsubscribe endpoint."""
-    expected = hashlib.sha256(
-        f"{email}:{settings.admin_api_key}".encode()
-    ).hexdigest()[:16]
+    email = email.lower().strip()
+    expected = _unsubscribe_sig(email)
     if not hmac.compare_digest(sig, expected):
         raise HTTPException(status_code=400, detail="Invalid unsubscribe link")
 
@@ -112,7 +120,7 @@ async def send_weekly_newsletter(
     db: AsyncSession = Depends(get_db),
 ):
     """Send weekly newsletter featuring highest-popularity unfeatured book. Admin-only."""
-    if not hmac.compare_digest(x_admin_key, settings.admin_api_key):
+    if not settings.admin_api_key or not hmac.compare_digest(x_admin_key, settings.admin_api_key):
         raise HTTPException(status_code=403, detail="Invalid admin key")
 
     from app.models.book import Book
@@ -146,7 +154,8 @@ async def send_weekly_newsletter(
                     temperature=0.7,
                     max_tokens=300,
                 )
-                description = resp.choices[0].message.content
+                raw = resp.choices[0].message.content or ""
+                description = html_mod.escape(raw)
         except Exception:
             pass
 
@@ -169,10 +178,9 @@ async def send_weekly_newsletter(
     for i in range(0, len(subscribers), 100):
         batch = subscribers[i:i + 100]
         for sub in batch:
-            unsub_sig = hashlib.sha256(
-                f"{sub.email}:{settings.admin_api_key}".encode()
-            ).hexdigest()[:16]
-            unsub_url = f"{settings.frontend_url.rstrip('/')}/api/v1/newsletter/unsubscribe?email={sub.email}&sig={unsub_sig}"
+            unsub_sig = _unsubscribe_sig(sub.email)
+            encoded_email = quote(sub.email, safe="")
+            unsub_url = f"{settings.frontend_url.rstrip('/')}/api/v1/newsletter/unsubscribe?email={encoded_email}&sig={unsub_sig}"
 
             html = f"""
             <div style="font-family: Georgia, serif; max-width: 500px; margin: 0 auto; padding: 40px 20px;">
@@ -205,7 +213,8 @@ async def send_weekly_newsletter(
                 })
                 sent += 1
             except Exception as e:
-                print(f"[NEWSLETTER] Failed to send to {sub.email}: {e}")
+                masked = sub.email[:3] + "***" if len(sub.email) > 3 else "***"
+                print(f"[NEWSLETTER] Failed to send to {masked}: {e}")
 
     # Record the send
     db.add(NewsletterSend(

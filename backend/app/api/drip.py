@@ -128,7 +128,7 @@ async def send_drip_batch(
     db: AsyncSession = Depends(get_db),
 ):
     """Send pending drip emails for all subscribers. Admin-only, cron-triggered."""
-    if not hmac.compare_digest(x_admin_key, settings.admin_api_key):
+    if not settings.admin_api_key or not hmac.compare_digest(x_admin_key, settings.admin_api_key):
         raise HTTPException(status_code=403, detail="Invalid admin key")
 
     import resend
@@ -179,7 +179,8 @@ async def send_drip_batch(
                 ))
                 sent_count += 1
             except Exception as e:
-                print(f"[DRIP] Failed to send step {step} to {sub.email}: {e}")
+                masked = sub.email[:3] + "***" if len(sub.email) > 3 else "***"
+                print(f"[DRIP] Failed to send step {step} to {masked}: {e}")
 
     await db.commit()
     return {"sent": sent_count}

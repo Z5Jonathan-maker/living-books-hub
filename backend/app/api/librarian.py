@@ -27,10 +27,12 @@ async def _deterministic_suggestions(
 
     # Simple keyword matching against subjects, title, description
     if len(msg) > 2:
+        # Escape SQL LIKE wildcards in user input
+        escaped = msg.replace("%", r"\%").replace("_", r"\_")
         query = query.where(
-            (Book.title.ilike(f"%{msg}%"))
-            | (Book.author.ilike(f"%{msg}%"))
-            | (Book.description.ilike(f"%{msg}%"))
+            (Book.title.ilike(f"%{escaped}%", escape="\\"))
+            | (Book.author.ilike(f"%{escaped}%", escape="\\"))
+            | (Book.description.ilike(f"%{escaped}%", escape="\\"))
         )
 
     query = query.order_by(Book.popularity_score.desc()).limit(5)
@@ -78,7 +80,7 @@ async def ask_librarian(
     # Free tier: 5 requests/day. Premium: unlimited.
     is_premium = user and user.subscription_tier == "premium" and user.subscription_active
     if user and not is_premium:
-        free_librarian_limiter.check(user.id)
+        await free_librarian_limiter.check(user.id)
 
     if settings.groq_enabled and settings.groq_api_key:
         try:

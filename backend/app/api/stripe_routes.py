@@ -13,15 +13,25 @@ from app.models.user import User
 
 router = APIRouter(prefix="/api/v1/stripe", tags=["stripe"])
 
+# Set Stripe API key once at module load (not per-request)
+if settings.stripe_secret_key:
+    stripe.api_key = settings.stripe_secret_key
+
 
 def _validate_redirect_url(url: str, field: str) -> None:
     """Ensure redirect URLs belong to known frontend domains."""
     parsed = urlparse(url)
     frontend_host = urlparse(settings.frontend_url).hostname
-    allowed = {frontend_host, "localhost", "127.0.0.1"}
+    allowed = {frontend_host}
+    if settings.debug:
+        allowed.update({"localhost", "127.0.0.1"})
     if parsed.hostname not in allowed:
         raise HTTPException(
             status_code=400, detail=f"Invalid {field} domain"
+        )
+    if parsed.scheme not in ("https", "http"):
+        raise HTTPException(
+            status_code=400, detail=f"Invalid {field} scheme"
         )
 
 
@@ -36,8 +46,6 @@ async def create_checkout_session(
 
     _validate_redirect_url(body.success_url, "success_url")
     _validate_redirect_url(body.cancel_url, "cancel_url")
-
-    stripe.api_key = settings.stripe_secret_key
 
     # Select price based on billing cycle
     if body.price_id == "annual" and settings.stripe_annual_price_id:
@@ -79,15 +87,25 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
     data_object = event["data"]["object"]
 
     if event_type == "checkout.session.completed":
-        customer_email = data_object.get("customer_email") or (
-            data_object.get("customer_details", {}).get("email")
-        )
-        if customer_email:
+        # Use server-set metadata.user_id as primary lookup (tamper-proof)
+        user_id = (data_object.get("metadata") or {}).get("user_id")
+        user = None
+        if user_id:
             result = await db.execute(
-                select(User).where(User.email == customer_email)
+                select(User).where(User.id == int(user_id))
             )
             user = result.scalar_one_or_none()
-            if user:
+        if not user:
+            # Fallback to email for sessions created before metadata was added
+            customer_email = data_object.get("customer_email") or (
+                data_object.get("customer_details", {}).get("email")
+            )
+            if customer_email:
+                result = await db.execute(
+                    select(User).where(User.email == customer_email)
+                )
+                user = result.scalar_one_or_none()
+        if user:
                 user.stripe_customer_id = data_object.get("customer")
                 user.subscription_tier = "premium"
                 user.subscription_active = True
@@ -141,5 +159,4 @@ async def get_subscription_status(
     return SubscriptionStatus(
         tier=user.subscription_tier,
         active=user.subscription_active,
-        stripe_customer_id=user.stripe_customer_id,
     )

@@ -22,10 +22,11 @@ jobs:
       github.event.inputs.job == 'drip-batch' ||
       (github.event_name == 'schedule' && github.event.schedule == '0 14 * * *')
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Send drip batch
         run: |
-          curl -sf -X POST \
+          curl -fSL --fail-with-body -X POST \
             "$API_BASE_URL/api/v1/admin/send-drip-batch" \
             -H "X-Admin-Key: $ADMIN_API_KEY" \
             -H "Content-Type: application/json" \
@@ -39,10 +40,11 @@ jobs:
       github.event.inputs.job == 'weekly-newsletter' ||
       (github.event_name == 'schedule' && github.event.schedule == '0 15 * * 2')
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Send weekly newsletter
         run: |
-          curl -sf -X POST \
+          curl -fSL --fail-with-body -X POST \
             "$API_BASE_URL/api/v1/newsletter/send-weekly" \
             -H "X-Admin-Key: $ADMIN_API_KEY" \
             -H "Content-Type: application/json" \

@@ -1,8 +1,11 @@
+import asyncio
 import time
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 from datetime import date
 
 from fastapi import HTTPException, Request
+
+MAX_IP_ENTRIES = 10_000
 
 
 class RateLimiter:
@@ -11,7 +14,7 @@ class RateLimiter:
     def __init__(self, max_requests: int = 10, window_seconds: int = 60):
         self.max_requests = max_requests
         self.window_seconds = window_seconds
-        self._requests: dict[str, list[float]] = defaultdict(list)
+        self._requests: OrderedDict[str, list[float]] = OrderedDict()
 
     def _get_client_ip(self, request: Request) -> str:
         client_ip = request.client.host if request.client else "unknown"
@@ -28,7 +31,14 @@ class RateLimiter:
         cutoff = now - self.window_seconds
 
         # Remove expired entries
-        self._requests[ip] = [t for t in self._requests[ip] if t > cutoff]
+        if ip in self._requests:
+            self._requests[ip] = [t for t in self._requests[ip] if t > cutoff]
+        else:
+            self._requests[ip] = []
+
+        # Evict oldest IPs if exceeding cap
+        while len(self._requests) > MAX_IP_ENTRIES:
+            self._requests.popitem(last=False)
 
         if len(self._requests[ip]) >= self.max_requests:
             raise HTTPException(
@@ -37,30 +47,33 @@ class RateLimiter:
             )
 
         self._requests[ip].append(now)
+        self._requests.move_to_end(ip)
 
 
 class DailyUserLimiter:
-    """Per-user daily request limiter. Resets at midnight."""
+    """Per-user daily request limiter. Resets at midnight. Thread-safe via asyncio.Lock."""
 
     def __init__(self, max_per_day: int = 5):
         self.max_per_day = max_per_day
         self._counts: dict[str, int] = {}
         self._date: date = date.today()
+        self._lock = asyncio.Lock()
 
-    def check(self, user_id: int) -> None:
-        today = date.today()
-        if today != self._date:
-            self._counts.clear()
-            self._date = today
+    async def check(self, user_id: int) -> None:
+        async with self._lock:
+            today = date.today()
+            if today != self._date:
+                self._counts.clear()
+                self._date = today
 
-        key = str(user_id)
-        count = self._counts.get(key, 0)
-        if count >= self.max_per_day:
-            raise HTTPException(
-                status_code=429,
-                detail=f"Free tier limit: {self.max_per_day} requests per day. Upgrade to Premium for unlimited access.",
-            )
-        self._counts[key] = count + 1
+            key = str(user_id)
+            count = self._counts.get(key, 0)
+            if count >= self.max_per_day:
+                raise HTTPException(
+                    status_code=429,
+                    detail=f"Free tier limit: {self.max_per_day} requests per day. Upgrade to Premium for unlimited access.",
+                )
+            self._counts[key] = count + 1
 
 
 # Shared instances

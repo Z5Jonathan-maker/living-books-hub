@@ -10,17 +10,27 @@ from app.core.config import settings
 from app.core.database import Base
 
 # Import all models so they're registered
-from app.models import book, list, subscriber, click_event  # noqa: F401
+from app.models import (  # noqa: F401  # noqa: F401
+    book,
+    child,
+    click_event,
+    list,
+    reading_plan,
+    review,
+    subscriber,
+    user,
+)
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.async_database_url)
 
-# SSL config for Render PostgreSQL
+# SSL config: external connections require SSL, Render internal (dpg-*) does not
 _connect_args = {}
-if "localhost" not in settings.async_database_url and "127.0.0.1" not in settings.async_database_url:
+_db_url = settings.async_database_url
+_is_local = "localhost" in _db_url or "127.0.0.1" in _db_url
+_is_render_internal = "dpg-" in _db_url and "-a" in _db_url
+if not _is_local and not _is_render_internal:
     _ssl_ctx = ssl_module.create_default_context()
-    _ssl_ctx.check_hostname = False
-    _ssl_ctx.verify_mode = ssl_module.CERT_NONE
     _connect_args["ssl"] = _ssl_ctx
 
 if config.config_file_name is not None:

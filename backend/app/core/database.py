@@ -6,10 +6,12 @@ from sqlalchemy.orm import DeclarativeBase
 
 from app.core.config import settings
 
-# Render PostgreSQL requires SSL for external connections
+# SSL config: external connections require SSL, Render internal (dpg-*) does not
 connect_args = {}
 _db_url = settings.async_database_url
-if "localhost" not in _db_url and "127.0.0.1" not in _db_url:
+_is_local = "localhost" in _db_url or "127.0.0.1" in _db_url
+_is_render_internal = "dpg-" in _db_url and "-a" in _db_url
+if not _is_local and not _is_render_internal:
     ssl_ctx = ssl_module.create_default_context()
     connect_args["ssl"] = ssl_ctx
 

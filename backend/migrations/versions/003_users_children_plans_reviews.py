@@ -4,8 +4,8 @@ Revision ID: 003_users_children_plans_reviews
 Revises: 002_subscribers_clicks
 Create Date: 2026-02-27
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects.postgresql import ARRAY
 
 revision = "003_users_children_plans_reviews"

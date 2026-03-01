@@ -4,11 +4,11 @@ Revision ID: 002_subscribers_clicks
 Revises: 001_initial_schema
 Create Date: 2026-02-27
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 
 revision = "002_subscribers_clicks"
-down_revision = None  # Will be set by alembic
+down_revision = "001"
 branch_labels = None
 depends_on = None
 

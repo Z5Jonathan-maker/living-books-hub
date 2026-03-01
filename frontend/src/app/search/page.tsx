@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { SearchBar } from "@/components/SearchBar";
 import { BookCard } from "@/components/BookCard";
 import { FilterSidebar } from "@/components/FilterSidebar";
+import { MobileFilterDrawer } from "@/components/MobileFilterDrawer";
 import { searchBooks, getFilterOptions } from "@/lib/api";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -47,6 +48,11 @@ async function SearchResults({
 
         {/* Results */}
         <div className="flex-1 min-w-0">
+          {/* Mobile filter drawer */}
+          <div className="lg:hidden mb-4">
+            <MobileFilterDrawer filters={filters} />
+          </div>
+
           {/* Sort bar */}
           <div className="flex items-center justify-between mb-6">
             <p className="text-sm text-warm-gray">

@@ -10,11 +10,13 @@ from app.core.config import settings
 from app.core.database import Base
 
 # Import all models so they're registered
-from app.models import (  # noqa: F401  # noqa: F401
+from app.models import (  # noqa: F401
     book,
     child,
     click_event,
+    drip_event,
     list,
+    newsletter_send,
     reading_plan,
     review,
     subscriber,

@@ -170,6 +170,7 @@ class LibrarianResponse(BaseModel):
 class CheckoutSessionCreate(BaseModel):
     success_url: str
     cancel_url: str
+    price_id: str | None = None  # "annual" to select annual plan
 
 
 class SubscriptionStatus(BaseModel):

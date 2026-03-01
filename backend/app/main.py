@@ -11,6 +11,7 @@ from app.api import (
     books,
     children,
     curriculum,
+    drip,
     librarian,
     lists,
     newsletter,
@@ -66,6 +67,7 @@ app.include_router(librarian.router)
 app.include_router(stripe_routes.router)
 app.include_router(admin.router)
 app.include_router(newsletter.router)
+app.include_router(drip.router)
 app.include_router(tracking.router)
 app.include_router(auth.router)
 app.include_router(children.router)

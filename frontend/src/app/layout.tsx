@@ -46,6 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    site: "@LivingBooksHub",
     title: "Living Books Hub",
     description:
       "The definitive curated library of living books for homeschool families.",

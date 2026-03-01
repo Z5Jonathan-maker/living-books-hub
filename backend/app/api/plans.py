@@ -57,7 +57,22 @@ async def create_plan(
     user: User = Depends(require_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Create a new reading plan."""
+    """Create a new reading plan. Free users limited to 1 plan."""
+    is_premium = user.subscription_tier == "premium" and user.subscription_active
+    if not is_premium:
+        count = (
+            await db.execute(
+                select(func.count())
+                .select_from(ReadingPlan)
+                .where(ReadingPlan.user_id == user.id)
+            )
+        ).scalar() or 0
+        if count >= 1:
+            raise HTTPException(
+                status_code=403,
+                detail="Free tier allows 1 reading plan. Upgrade to Premium for unlimited plans.",
+            )
+
     plan = ReadingPlan(
         user_id=user.id,
         child_id=req.child_id,

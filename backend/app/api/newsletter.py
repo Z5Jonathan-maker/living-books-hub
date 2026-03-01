@@ -1,4 +1,6 @@
+import hashlib
 import hmac
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from sqlalchemy import select
@@ -41,6 +43,13 @@ async def subscribe(
         )
         await db.execute(stmt)
         await db.commit()
+
+        # Send welcome email (non-blocking — failures don't affect subscription)
+        try:
+            from app.services.email import send_newsletter_welcome
+            send_newsletter_welcome(req.email.lower().strip(), req.name)
+        except Exception:
+            pass
     except Exception:
         await db.rollback()
         raise HTTPException(status_code=500, detail="Unable to process subscription right now.")
@@ -71,3 +80,139 @@ async def export_subscribers(
         )
         for s in subscribers
     ]
+
+
+@router.get("/unsubscribe")
+async def unsubscribe(
+    email: str,
+    sig: str,
+    db: AsyncSession = Depends(get_db),
+):
+    """HMAC-secured unsubscribe endpoint."""
+    expected = hashlib.sha256(
+        f"{email}:{settings.admin_api_key}".encode()
+    ).hexdigest()[:16]
+    if not hmac.compare_digest(sig, expected):
+        raise HTTPException(status_code=400, detail="Invalid unsubscribe link")
+
+    result = await db.execute(
+        select(EmailSubscriber).where(EmailSubscriber.email == email)
+    )
+    subscriber = result.scalar_one_or_none()
+    if subscriber:
+        subscriber.unsubscribed_at = datetime.now(timezone.utc)
+        await db.commit()
+
+    return {"message": "You have been unsubscribed. We're sorry to see you go!"}
+
+
+@router.post("/send-weekly")
+async def send_weekly_newsletter(
+    x_admin_key: str = Header(..., alias="X-Admin-Key"),
+    db: AsyncSession = Depends(get_db),
+):
+    """Send weekly newsletter featuring highest-popularity unfeatured book. Admin-only."""
+    if not hmac.compare_digest(x_admin_key, settings.admin_api_key):
+        raise HTTPException(status_code=403, detail="Invalid admin key")
+
+    from app.models.book import Book
+    from app.models.newsletter_send import NewsletterSend
+
+    # Find highest-popularity book not yet featured
+    already_featured = select(NewsletterSend.book_id)
+    result = await db.execute(
+        select(Book)
+        .where(Book.id.notin_(already_featured))
+        .order_by(Book.popularity_score.desc())
+        .limit(1)
+    )
+    book = result.scalar_one_or_none()
+    if not book:
+        return {"sent": 0, "message": "No unfeatured books remaining"}
+
+    # Generate description with Groq if available
+    description = book.description
+    if settings.groq_enabled and settings.groq_api_key:
+        try:
+            from app.services.ai import get_groq_client
+            client = get_groq_client()
+            if client:
+                resp = client.chat.completions.create(
+                    model="llama-3.3-70b-versatile",
+                    messages=[
+                        {"role": "system", "content": "You write warm, compelling 2-paragraph descriptions of living books for homeschool families. Be specific about why the book is special and who it's perfect for. Keep it under 150 words."},
+                        {"role": "user", "content": f"Write a newsletter spotlight for: \"{book.title}\" by {book.author}. Description: {book.description}. Subjects: {', '.join(book.subjects)}. Ages: {book.age_range}."},
+                    ],
+                    temperature=0.7,
+                    max_tokens=300,
+                )
+                description = resp.choices[0].message.content
+        except Exception:
+            pass
+
+    # Get active subscribers
+    result = await db.execute(
+        select(EmailSubscriber).where(EmailSubscriber.unsubscribed_at.is_(None))
+    )
+    subscribers = result.scalars().all()
+
+    if not subscribers:
+        return {"sent": 0, "message": "No active subscribers"}
+
+    import resend
+    resend.api_key = settings.resend_api_key
+
+    subject = f"This Week's Living Book: {book.title}"
+    sent = 0
+
+    # Send in batches of 100
+    for i in range(0, len(subscribers), 100):
+        batch = subscribers[i:i + 100]
+        for sub in batch:
+            unsub_sig = hashlib.sha256(
+                f"{sub.email}:{settings.admin_api_key}".encode()
+            ).hexdigest()[:16]
+            unsub_url = f"{settings.frontend_url.rstrip('/')}/api/v1/newsletter/unsubscribe?email={sub.email}&sig={unsub_sig}"
+
+            html = f"""
+            <div style="font-family: Georgia, serif; max-width: 500px; margin: 0 auto; padding: 40px 20px;">
+                <h1 style="color: #2D5F2D; font-size: 24px;">This Week's Living Book</h1>
+                <h2 style="color: #333; font-size: 20px; margin-top: 20px;">
+                    "{book.title}" by {book.author}
+                </h2>
+                <p style="color: #888; font-size: 13px;">Ages {book.age_range} | {', '.join(book.subjects)}</p>
+                <div style="color: #555; line-height: 1.6; margin-top: 16px;">
+                    {description}
+                </div>
+                <a href="{settings.frontend_url}/books/{book.id}"
+                   style="display: inline-block; padding: 14px 28px; background: #2D5F2D;
+                          color: white; text-decoration: none; border-radius: 8px;
+                          font-weight: bold; margin: 20px 0;">
+                    View This Book
+                </a>
+                <p style="color: #999; font-size: 11px; margin-top: 30px;">
+                    <a href="{unsub_url}" style="color: #999;">Unsubscribe</a> from Living Books Hub newsletter.
+                </p>
+            </div>
+            """
+
+            try:
+                resend.Emails.send({
+                    "from": settings.from_email,
+                    "to": [sub.email],
+                    "subject": subject,
+                    "html": html,
+                })
+                sent += 1
+            except Exception as e:
+                print(f"[NEWSLETTER] Failed to send to {sub.email}: {e}")
+
+    # Record the send
+    db.add(NewsletterSend(
+        book_id=book.id,
+        subject=subject,
+        recipient_count=sent,
+    ))
+    await db.commit()
+
+    return {"sent": sent, "book": book.title}

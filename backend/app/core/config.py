@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     stripe_publishable_key: str = ""
     stripe_webhook_secret: str = ""
     stripe_price_id: str = ""
+    stripe_annual_price_id: str = ""
 
     llm_enabled: bool = False
     anthropic_api_key: str = ""

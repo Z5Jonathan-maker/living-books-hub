@@ -72,7 +72,8 @@ export async function askLibrarian(message: string) {
 
 export async function createCheckoutSession(
   successUrl: string,
-  cancelUrl: string
+  cancelUrl: string,
+  billingCycle?: "annual"
 ) {
   return fetchAPI<{ checkout_url: string; session_id: string }>(
     `/api/v1/stripe/create-checkout-session`,
@@ -81,6 +82,7 @@ export async function createCheckoutSession(
       body: JSON.stringify({
         success_url: successUrl,
         cancel_url: cancelUrl,
+        ...(billingCycle === "annual" && { price_id: "annual" }),
       }),
     }
   );

@@ -12,6 +12,86 @@ export const metadata: Metadata = {
 
 const articles = [
   {
+    slug: "homeschool-curriculum-planning-guide",
+    title: "The Complete Homeschool Curriculum Planning Guide",
+    description:
+      "A step-by-step guide to planning your homeschool curriculum with living books. Assessment, subject planning, scheduling, and practical tips for every approach.",
+    date: "2026-02-28",
+    category: "Planning",
+  },
+  {
+    slug: "charlotte-mason-method-explained",
+    title: "The Charlotte Mason Method Explained",
+    description:
+      "Everything you need to know about Charlotte Mason's educational philosophy — living books, narration, nature study, short lessons, and how to start.",
+    date: "2026-02-28",
+    category: "Charlotte Mason",
+  },
+  {
+    slug: "best-nature-study-books",
+    title: "Best Nature Study Books for Homeschool Families",
+    description:
+      "A curated guide to the best nature study living books by age range. Seasonal reads, field guides, and narrative nature books for every stage.",
+    date: "2026-02-28",
+    category: "Nature Study",
+  },
+  {
+    slug: "history-living-books-by-period",
+    title: "Living Books for History: Organized by Time Period",
+    description:
+      "Find the best history living books from ancient civilizations through modern era. Organized by time period with age-appropriate recommendations.",
+    date: "2026-02-28",
+    category: "History",
+  },
+  {
+    slug: "read-aloud-chapter-books-families",
+    title: "The Best Read-Aloud Chapter Books for Families",
+    description:
+      "Why read-alouds matter and the best chapter books for every age. Tips for making family reading time magical.",
+    date: "2026-02-28",
+    category: "Read-Alouds",
+  },
+  {
+    slug: "living-books-for-science",
+    title: "Living Books for Science: Beyond the Textbook",
+    description:
+      "Discover living books that make science come alive — biology, astronomy, geology, chemistry, and physics organized by age and topic.",
+    date: "2026-02-28",
+    category: "Science",
+  },
+  {
+    slug: "narration-guide-living-books",
+    title: "The Complete Guide to Narration with Living Books",
+    description:
+      "What is narration, how to do it by age, and why it's more powerful than worksheets. A practical guide for homeschool families.",
+    date: "2026-02-28",
+    category: "Charlotte Mason",
+  },
+  {
+    slug: "living-books-for-reluctant-readers",
+    title: "Living Books for Reluctant Readers",
+    description:
+      "How to help reluctant readers discover a love of books. Strategies, book selection tips, and patience-based approaches that work.",
+    date: "2026-02-28",
+    category: "Reading Help",
+  },
+  {
+    slug: "homeschool-book-budget-guide",
+    title: "Homeschool Book Budget Guide: Build a Library Affordably",
+    description:
+      "Smart strategies for building a living books library without breaking the bank. Used books, free resources, library tips, and price comparison.",
+    date: "2026-02-28",
+    category: "Budget",
+  },
+  {
+    slug: "free-living-books-public-domain",
+    title: "Free Living Books: Public Domain Treasures",
+    description:
+      "Discover hundreds of free living books in the public domain. Project Gutenberg, Librivox, Internet Archive, and how to build a free curriculum.",
+    date: "2026-02-28",
+    category: "Free Resources",
+  },
+  {
     slug: "best-living-books-by-grade-level",
     title: "Best Living Books by Grade Level (2026)",
     description:

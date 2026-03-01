@@ -387,24 +387,24 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
+                title: "The Charlotte Mason Method Explained",
+                href: "/blog/charlotte-mason-method-explained",
+                desc: "Everything you need to know about CM's philosophy — living books, narration, nature study, and how to start.",
+              },
+              {
+                title: "Best Nature Study Books for Homeschool",
+                href: "/blog/best-nature-study-books",
+                desc: "Curated nature study living books by age range. Seasonal reads, field guides, and narrative nature books.",
+              },
+              {
+                title: "Homeschool Curriculum Planning Guide",
+                href: "/blog/homeschool-curriculum-planning-guide",
+                desc: "Step-by-step curriculum planning with living books. Assessment, scheduling, and practical tips.",
+              },
+              {
                 title: "Best Living Books by Grade Level (2026)",
                 href: "/blog/best-living-books-by-grade-level",
                 desc: "Age-appropriate living book picks from preschool through high school.",
-              },
-              {
-                title: "Charlotte Mason Book List 2026",
-                href: "/blog/charlotte-mason-book-list-2026",
-                desc: "A comprehensive, updated Charlotte Mason reading list for every year.",
-              },
-              {
-                title: "Living Books vs Textbooks: Why It Matters",
-                href: "/blog/living-books-vs-textbooks",
-                desc: "How living books engage children differently and why families are switching.",
-              },
-              {
-                title: "How to Start a Living Books Homeschool",
-                href: "/blog/how-to-start-living-books-homeschool",
-                desc: "A step-by-step guide to building your curriculum around living books.",
               },
             ].map((post) => (
               <Link
@@ -438,7 +438,7 @@ export default async function HomePage() {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/subscribe" className="btn-gold text-lg px-8 py-4">
-              Go Premium — $5.99/mo
+              Go Premium — $5.99/mo or $49/yr
             </Link>
             <Link
               href="/curriculum"

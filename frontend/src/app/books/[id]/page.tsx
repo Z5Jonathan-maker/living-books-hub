@@ -254,6 +254,27 @@ export default async function BookDetailPage({ params }: Props) {
           {/* Reviews */}
           <BookReviews bookId={book.id} />
 
+          {/* Internal discovery links */}
+          <div className="mt-10 flex flex-wrap gap-3">
+            {book.age_range && (
+              <Link
+                href={`/search?age_range=${encodeURIComponent(book.age_range)}`}
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-forest bg-sage-light/30 rounded-lg hover:bg-sage-light/50 transition-colors"
+              >
+                See more books for ages {book.age_range}
+              </Link>
+            )}
+            {book.subjects.slice(0, 3).map((subject) => (
+              <Link
+                key={subject}
+                href={`/search?subject=${encodeURIComponent(subject)}`}
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-forest bg-sage-light/30 rounded-lg hover:bg-sage-light/50 transition-colors"
+              >
+                Browse more {subject} books
+              </Link>
+            ))}
+          </div>
+
           {/* Related Books */}
           {related.length > 0 && (
             <div className="mt-16">

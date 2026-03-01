@@ -55,8 +55,11 @@ export default function CurriculumPage() {
           Let AI craft a personalized year-long reading plan for your child — matched to their age, interests, and reading level.
         </p>
         <Link href="/subscribe" className="btn-gold px-8 py-3 text-lg">
-          Unlock with Premium — $5.99/mo
+          Unlock with Premium — $5.99/mo or $49/yr
         </Link>
+        <p className="text-sm text-warm-gray mt-3">
+          Annual plan saves you $22.88/year (32% off)
+        </p>
       </div>
     );
   }

@@ -6,7 +6,7 @@ from app.api.books import _ensure_cover_url
 from app.core.auth import get_current_user
 from app.core.config import settings
 from app.core.database import get_db
-from app.core.rate_limit import librarian_limiter
+from app.core.rate_limit import free_librarian_limiter, librarian_limiter
 from app.models.book import Book
 from app.models.child import Child
 from app.models.schemas import BookSummary, LibrarianRequest, LibrarianResponse
@@ -74,6 +74,12 @@ async def ask_librarian(
     Falls back to deterministic database-driven recommendations.
     """
     librarian_limiter.check(request)
+
+    # Free tier: 5 requests/day. Premium: unlimited.
+    is_premium = user and user.subscription_tier == "premium" and user.subscription_active
+    if user and not is_premium:
+        free_librarian_limiter.check(user.id)
+
     if settings.groq_enabled and settings.groq_api_key:
         try:
             # Get books for context
@@ -87,9 +93,9 @@ async def ask_librarian(
                 for b in books
             )
 
-            # Build family context if user is logged in
+            # Build family context (premium only — personalized recommendations)
             family_context = None
-            if user:
+            if user and is_premium:
                 children_result = await db.execute(
                     select(Child).where(Child.user_id == user.id)
                 )

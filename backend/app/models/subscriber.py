@@ -16,3 +16,4 @@ class EmailSubscriber(Base):
     utm_medium = Column(String, nullable=True)
     utm_campaign = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    unsubscribed_at = Column(DateTime, nullable=True)

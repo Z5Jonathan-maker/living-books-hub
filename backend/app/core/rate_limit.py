@@ -1,5 +1,6 @@
 import time
 from collections import defaultdict
+from datetime import date
 
 from fastapi import HTTPException, Request
 
@@ -38,8 +39,33 @@ class RateLimiter:
         self._requests[ip].append(now)
 
 
+class DailyUserLimiter:
+    """Per-user daily request limiter. Resets at midnight."""
+
+    def __init__(self, max_per_day: int = 5):
+        self.max_per_day = max_per_day
+        self._counts: dict[str, int] = {}
+        self._date: date = date.today()
+
+    def check(self, user_id: int) -> None:
+        today = date.today()
+        if today != self._date:
+            self._counts.clear()
+            self._date = today
+
+        key = str(user_id)
+        count = self._counts.get(key, 0)
+        if count >= self.max_per_day:
+            raise HTTPException(
+                status_code=429,
+                detail=f"Free tier limit: {self.max_per_day} requests per day. Upgrade to Premium for unlimited access.",
+            )
+        self._counts[key] = count + 1
+
+
 # Shared instances
 newsletter_limiter = RateLimiter(max_requests=5, window_seconds=60)
 tracking_limiter = RateLimiter(max_requests=60, window_seconds=60)
 auth_limiter = RateLimiter(max_requests=5, window_seconds=300)
 librarian_limiter = RateLimiter(max_requests=10, window_seconds=60)
+free_librarian_limiter = DailyUserLimiter(max_per_day=5)

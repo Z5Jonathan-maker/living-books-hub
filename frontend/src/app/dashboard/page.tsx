@@ -256,6 +256,21 @@ export default function DashboardPage() {
         )}
       </div>
 
+      {/* Premium Upsell */}
+      {!isPremium && (
+        <div className="mb-10 p-6 rounded-2xl bg-gradient-to-r from-gold-light/20 to-parchment/30 border border-gold/20">
+          <h2 className="text-lg font-serif font-bold text-ink">Get More with Premium</h2>
+          <p className="text-sm text-warm-gray mt-1 mb-4">
+            Unlimited AI librarian, AI Curriculum Builder, unlimited child profiles and reading plans.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/subscribe" className="btn-gold text-sm px-5 py-2">
+              Go Premium — $5.99/mo or $49/yr
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* Reading Plans */}
       <div>
         <h2 className="text-xl font-serif font-bold text-ink mb-4">Reading Plans</h2>

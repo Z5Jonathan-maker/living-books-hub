@@ -1,6 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 
+import fastapi
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -89,3 +90,18 @@ async def api_root():
         "docs": "/docs",
         "version": "1.0.0",
     }
+
+
+@app.post("/api/v1/admin/seed", tags=["admin"])
+async def trigger_seed(x_api_key: str = fastapi.Header(...)):
+    """Admin-only: trigger database seed. Returns result or error."""
+    import hmac
+    if not hmac.compare_digest(x_api_key, settings.admin_api_key):
+        raise fastapi.HTTPException(status_code=403, detail="Invalid admin key")
+    import traceback
+    try:
+        from scripts.seed import seed
+        await seed()
+        return {"status": "ok", "message": "Seed completed"}
+    except Exception as e:
+        return {"status": "error", "error": str(e), "traceback": traceback.format_exc()}

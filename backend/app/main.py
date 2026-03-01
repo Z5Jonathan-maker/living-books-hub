@@ -1,3 +1,4 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -20,9 +21,17 @@ from app.api import (
 )
 from app.core.config import settings
 
+logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Run seed on startup if DB is empty
+    try:
+        from scripts.seed import seed
+        await seed()
+    except Exception as e:
+        logger.warning("Seed on startup failed: %s", e)
     yield
 
 

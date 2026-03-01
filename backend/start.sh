@@ -9,8 +9,8 @@ python -m alembic upgrade head || {
 }
 
 echo "=== Running seed script ==="
-python -m scripts.seed || {
-    echo "WARNING: Seed script failed (may already be seeded), continuing..."
+python -m scripts.seed 2>&1 || {
+    echo "WARNING: Seed script failed with exit code $?. Output above. Continuing..."
 }
 
 echo "=== Starting uvicorn ==="

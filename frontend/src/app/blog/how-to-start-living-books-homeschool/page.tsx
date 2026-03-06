@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BlogArticle } from "@/components/BlogArticle";
+import { EmailSignup } from "@/components/EmailSignup";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,6 +12,13 @@ export const metadata: Metadata = {
     title: "How to Start a Living Books Homeschool — Living Books Hub",
     description:
       "Your complete guide to starting a living books homeschool — from choosing your first books to planning your year.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "How to Start a Living Books Homeschool",
+    description:
+      "A step-by-step guide for families new to living books. Learn how to choose books, structure your day, and build a curriculum around real literature.",
   },
 };
 
@@ -183,6 +191,10 @@ export default function HowToStartLivingBooksHomeschool() {
           grade-level recommendations
         </Link>.
       </p>
+
+      <div className="my-12 not-prose">
+        <EmailSignup variant="card" source="blog" />
+      </div>
     </BlogArticle>
   );
 }

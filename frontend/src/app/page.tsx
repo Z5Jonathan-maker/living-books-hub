@@ -3,6 +3,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { BookCard } from "@/components/BookCard";
 import { LibrarianChat } from "@/components/LibrarianChat";
 import { EmailSignup } from "@/components/EmailSignup";
+import { OrganizationJsonLd } from "@/components/JsonLd";
 import { getCatalogStats, searchBooks, getLists } from "@/lib/api";
 import type { CuratedList, BookSummary, CatalogStats } from "@/types";
 
@@ -35,6 +36,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <OrganizationJsonLd />
       {/* Hero Section */}
       <section className="relative bg-paper-texture bg-cream overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cream/50 to-cream" />
@@ -269,8 +271,8 @@ export default async function HomePage() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-              {popularBooks.map((book) => (
-                <BookCard key={book.id} book={book} />
+              {popularBooks.map((book, index) => (
+                <BookCard key={book.id} book={book} priority={index < 4} />
               ))}
             </div>
 

@@ -29,24 +29,28 @@ async def list_plans(
     db: AsyncSession = Depends(get_db),
 ):
     """List all reading plans for the current user."""
+    # Single query with subquery count to avoid N+1
+    count_subq = (
+        select(
+            ReadingPlanItem.plan_id,
+            func.count(ReadingPlanItem.id).label("item_count"),
+        )
+        .group_by(ReadingPlanItem.plan_id)
+        .subquery()
+    )
+
     result = await db.execute(
-        select(ReadingPlan)
+        select(ReadingPlan, func.coalesce(count_subq.c.item_count, 0))
+        .outerjoin(count_subq, ReadingPlan.id == count_subq.c.plan_id)
         .where(ReadingPlan.user_id == user.id)
         .order_by(ReadingPlan.created_at.desc())
     )
-    plans = result.scalars().all()
+    rows = result.all()
 
     out = []
-    for p in plans:
-        count = (
-            await db.execute(
-                select(func.count())
-                .select_from(ReadingPlanItem)
-                .where(ReadingPlanItem.plan_id == p.id)
-            )
-        ).scalar() or 0
-        plan_out = ReadingPlanOut.model_validate(p)
-        plan_out.item_count = count
+    for plan, item_count in rows:
+        plan_out = ReadingPlanOut.model_validate(plan)
+        plan_out.item_count = item_count
         out.append(plan_out)
     return out
 

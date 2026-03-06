@@ -11,7 +11,7 @@ const READING_LEVEL_COLORS: Record<string, string> = {
   "teacher-reference": "badge-rust",
 };
 
-export function BookCard({ book }: { book: BookSummary }) {
+export function BookCard({ book, priority = false }: { book: BookSummary; priority?: boolean }) {
   const levelClass =
     READING_LEVEL_COLORS[book.reading_level || ""] || "badge-sage";
 
@@ -27,6 +27,7 @@ export function BookCard({ book }: { book: BookSummary }) {
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
               className="object-cover"
+              priority={priority}
             />
           ) : (
             <div className="text-center p-6">

@@ -13,6 +13,13 @@ export const metadata: Metadata = {
       "Best Read-Aloud Chapter Books for Homeschool Families — Living Books Hub",
     description:
       "Find the perfect read-aloud chapter books for your family — organized by age with practical tips.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Best Read-Aloud Chapter Books for Homeschool Families",
+    description:
+      "The best read-aloud chapter books for homeschool families, organized by age. Includes tips for building a daily read-aloud habit and choosing books everyone loves.",
   },
 };
 

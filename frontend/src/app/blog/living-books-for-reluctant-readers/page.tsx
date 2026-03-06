@@ -12,6 +12,13 @@ export const metadata: Metadata = {
     title: "Living Books for Reluctant Readers — Living Books Hub",
     description:
       "Practical strategies to help children who resist reading discover the joy of living books — from read-alouds to audiobooks to high-interest picks.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Living Books for Reluctant Readers: A Practical Guide",
+    description:
+      "Help your reluctant reader discover a love of books. Strategies for choosing engaging living books, read-aloud bridges, audiobook complements, and patience-based approaches.",
   },
 };
 

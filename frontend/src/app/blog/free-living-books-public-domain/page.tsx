@@ -12,6 +12,13 @@ export const metadata: Metadata = {
     title: "Free Living Books: Public Domain Treasures — Living Books Hub",
     description:
       "How to find and use free public domain living books from Project Gutenberg, LibriVox, Internet Archive, and other sources to build a complete homeschool curriculum.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Living Books: Your Guide to Public Domain Treasures",
+    description:
+      "Discover thousands of free living books in the public domain. Use Project Gutenberg, LibriVox, Internet Archive, and more to build a complete curriculum at no cost.",
   },
 };
 

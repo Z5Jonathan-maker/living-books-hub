@@ -13,6 +13,13 @@ export const metadata: Metadata = {
       "Homeschool Curriculum Planning Guide — A Living Books Approach — Living Books Hub",
     description:
       "A step-by-step guide to planning a homeschool curriculum built on living books — from year structure to weekly schedules to assessment.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Homeschool Curriculum Planning Guide — A Living Books Approach",
+    description:
+      "Plan your homeschool curriculum using living books. Covers year structure, subject selection, book criteria, weekly scheduling, assessment without tests, and iteration.",
   },
 };
 

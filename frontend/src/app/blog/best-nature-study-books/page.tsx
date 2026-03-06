@@ -13,6 +13,13 @@ export const metadata: Metadata = {
       "Best Nature Study Books for Homeschool (By Age & Season) — Living Books Hub",
     description:
       "The ultimate guide to nature study books for homeschool — field guides, narratives, and seasonal picks by age.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Best Nature Study Books for Homeschool (By Age & Season)",
+    description:
+      "Discover the best nature study books for homeschool families. Organized by age range and season, with field guides, narratives, and nature journaling resources.",
   },
 };
 

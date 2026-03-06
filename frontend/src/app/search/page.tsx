@@ -71,7 +71,7 @@ async function SearchResults({
             </p>
             <div className="flex items-center gap-2">
               <span className="text-xs text-warm-gray">Sort:</span>
-              <div className="flex gap-1">
+              <div className="flex gap-1" role="group" aria-label="Sort results">
                 {[
                   { value: "popularity", label: "Popular" },
                   { value: "title", label: "A-Z" },
@@ -85,6 +85,7 @@ async function SearchResults({
                     <Link
                       key={opt.value}
                       href={`/search?${sortParams.toString()}`}
+                      aria-current={isActive ? "true" : undefined}
                       className={`px-3 py-1 text-xs rounded-full transition-colors ${
                         isActive
                           ? "bg-forest text-white"
@@ -120,6 +121,7 @@ async function SearchResults({
                       <Link
                         key={page}
                         href={`/search?${pageParams.toString()}`}
+                        aria-current={isActive ? "page" : undefined}
                         className={`w-10 h-10 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
                           isActive
                             ? "bg-forest text-white"

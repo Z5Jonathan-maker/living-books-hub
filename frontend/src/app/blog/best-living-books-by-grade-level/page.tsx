@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BlogArticle } from "@/components/BlogArticle";
+import { EmailSignup } from "@/components/EmailSignup";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,6 +12,13 @@ export const metadata: Metadata = {
     title: "Best Living Books by Grade Level (2026) — Living Books Hub",
     description:
       "The definitive guide to choosing living books by grade level. Updated for 2026.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Best Living Books by Grade Level (2026)",
+    description:
+      "A comprehensive guide to the best living books for every age, from preschool through high school. Organized by grade level with recommendations for history, science, literature, and nature study.",
   },
 };
 
@@ -149,6 +157,10 @@ export default function BestBooksByGradeLevel() {
         </Link>{" "}
         built by experienced homeschool educators.
       </p>
+
+      <div className="my-12 not-prose">
+        <EmailSignup variant="card" source="blog" />
+      </div>
     </BlogArticle>
   );
 }

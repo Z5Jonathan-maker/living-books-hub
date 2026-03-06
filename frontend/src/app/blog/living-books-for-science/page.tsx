@@ -13,6 +13,13 @@ export const metadata: Metadata = {
       "Living Books for Science — Beyond Textbooks — Living Books Hub",
     description:
       "The ultimate guide to replacing science textbooks with living books that ignite curiosity across every discipline.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Living Books for Science — Beyond Textbooks",
+    description:
+      "Discover the best living books for science across biology, physics, chemistry, astronomy, and earth science. Replace dry textbooks with literature that brings science to life.",
   },
 };
 

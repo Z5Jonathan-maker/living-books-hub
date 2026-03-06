@@ -13,6 +13,13 @@ export const metadata: Metadata = {
       "The Complete Guide to Narration in Charlotte Mason Education — Living Books Hub",
     description:
       "Everything you need to know about narration: the Charlotte Mason method of retelling that builds comprehension, memory, and communication skills.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Complete Guide to Narration in Charlotte Mason Education",
+    description:
+      "Learn how narration works in a Charlotte Mason homeschool. Oral and written narration techniques by age, tips for reluctant narrators, and why narration beats comprehension questions.",
   },
 };
 

@@ -19,6 +19,7 @@ export default function DashboardPage() {
   const [childInterests, setChildInterests] = useState("");
   const [childLevel, setChildLevel] = useState("");
   const [saving, setSaving] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -79,9 +80,14 @@ export default function DashboardPage() {
   }
 
   async function handleLogout() {
-    await logout();
-    setUser(null);
-    router.push("/");
+    setLoggingOut(true);
+    try {
+      await logout();
+      setUser(null);
+      router.push("/");
+    } catch {
+      setLoggingOut(false);
+    }
   }
 
   const isPremium = user.subscription_tier === "premium" && user.subscription_active;
@@ -100,8 +106,12 @@ export default function DashboardPage() {
           <span className={`px-3 py-1 rounded-full text-xs font-medium ${isPremium ? "bg-gold-light text-leather" : "bg-ink/5 text-warm-gray"}`}>
             {isPremium ? "Premium" : "Free Plan"}
           </span>
-          <button onClick={handleLogout} className="text-sm text-warm-gray hover:text-ink">
-            Sign Out
+          <button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="text-sm text-warm-gray hover:text-ink disabled:opacity-50"
+          >
+            {loggingOut ? "Signing out..." : "Sign Out"}
           </button>
         </div>
       </div>

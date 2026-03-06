@@ -75,26 +75,32 @@ function EmailSignupInner({
 
   if (variant === "footer") {
     return (
-      <form onSubmit={handleSubmit} className="flex gap-2 max-w-md">
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Your email address"
-          className="flex-1 px-3 py-2 text-sm bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-sage"
-        />
-        <button
-          type="submit"
-          disabled={status === "loading"}
-          className="px-4 py-2 text-sm font-medium bg-sage text-white rounded-lg hover:bg-sage/90 transition-colors disabled:opacity-50"
-        >
-          {status === "loading" ? "..." : "Join"}
-        </button>
+      <div className="max-w-md">
+        <label htmlFor="footer-email" className="block text-xs text-white/60 mb-1">
+          Get free weekly book picks
+        </label>
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <input
+            id="footer-email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Your email address"
+            className="flex-1 px-3 py-2 text-sm bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:ring-1 focus:ring-sage"
+          />
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="px-4 py-2 text-sm font-medium bg-sage text-white rounded-lg hover:bg-sage/90 transition-colors disabled:opacity-50"
+          >
+            {status === "loading" ? "..." : "Join"}
+          </button>
+        </form>
         {status === "error" && (
           <p className="text-xs text-rust mt-1">Something went wrong. Try again.</p>
         )}
-      </form>
+      </div>
     );
   }
 

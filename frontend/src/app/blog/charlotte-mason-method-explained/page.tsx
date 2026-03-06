@@ -13,6 +13,13 @@ export const metadata: Metadata = {
       "The Charlotte Mason Method Explained: A Complete Guide — Living Books Hub",
     description:
       "A comprehensive guide to Charlotte Mason education — philosophy, methods, and practical steps to get started.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Charlotte Mason Method Explained: A Complete Guide",
+    description:
+      "Everything you need to know about the Charlotte Mason method — her philosophy, living books, narration, nature study, short lessons, habit training, and how to start.",
   },
 };
 

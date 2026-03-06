@@ -12,6 +12,13 @@ export const metadata: Metadata = {
     title: "Homeschool Books on a Budget — Living Books Hub",
     description:
       "Practical strategies for building a living books library without breaking the bank. Used books, library hacks, free resources, and more.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Homeschool Books on a Budget: The Complete Guide",
+    description:
+      "Save hundreds on homeschool books with these practical strategies. Library tips, used book sources, free public domain books, and price comparison advice.",
   },
 };
 

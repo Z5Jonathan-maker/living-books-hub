@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BlogArticle } from "@/components/BlogArticle";
+import { EmailSignup } from "@/components/EmailSignup";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,6 +12,13 @@ export const metadata: Metadata = {
     title: "Living Books vs Textbooks: Why It Matters — Living Books Hub",
     description:
       "Discover why living books outperform textbooks for lasting learning.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Living Books vs Textbooks: Why It Matters",
+    description:
+      "What makes living books different from textbooks? An in-depth look at the research, the philosophy, and the practical differences for your homeschool.",
   },
 };
 
@@ -155,6 +163,10 @@ export default function LivingBooksVsTextbooks() {
           guide to what makes a living book
         </Link>.
       </p>
+
+      <div className="my-12 not-prose">
+        <EmailSignup variant="card" source="blog" />
+      </div>
     </BlogArticle>
   );
 }

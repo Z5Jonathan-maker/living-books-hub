@@ -132,6 +132,7 @@ function FilterGroup({
           <button
             key={opt}
             onClick={() => onSelect(selected === opt ? "" : opt)}
+            aria-label={`${label}: ${opt}${selected === opt ? " (selected)" : ""}`}
             className={`w-full text-left px-3 py-1.5 text-sm rounded-lg transition-colors ${
               selected === opt
                 ? "bg-forest text-white font-medium"

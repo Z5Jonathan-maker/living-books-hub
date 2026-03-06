@@ -400,13 +400,18 @@ function ReadingPlanInner() {
             </svg>
           </div>
           <h2 className="text-xl font-serif font-bold text-ink">
-            {filter === "all" ? "Your reading plan is empty" : `No ${filter} books`}
+            {filter === "all" ? "No books yet!" : `No ${filter} books`}
           </h2>
-          <p className="mt-2 text-warm-gray">
+          <p className="mt-2 text-warm-gray max-w-md mx-auto">
             {filter === "all"
-              ? "Browse our library and add books to start your family's reading journey."
+              ? "Browse the library and click \u2018Add to Reading Plan\u2019 on any book to get started."
               : "Move books between statuses to see them here."}
           </p>
+          {filter === "all" && !user && (
+            <p className="mt-3 text-sm text-warm-gray">
+              <Link href="/login" className="text-forest font-medium hover:underline">Sign in</Link> to save your reading plan across devices.
+            </p>
+          )}
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link href="/search" className="btn-primary">Browse Books</Link>
             {user && (

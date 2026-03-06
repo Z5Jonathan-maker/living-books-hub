@@ -64,7 +64,9 @@ async def build_curriculum(
         )
     except ValueError as e:
         raise HTTPException(status_code=503, detail=str(e))
-    except Exception:
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error("Curriculum generation failed: %s", e)
         raise HTTPException(
             status_code=500,
             detail="Failed to generate curriculum. Please try again.",

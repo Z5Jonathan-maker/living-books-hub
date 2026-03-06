@@ -29,6 +29,25 @@ export function WebSiteJsonLd() {
   );
 }
 
+export function OrganizationJsonLd() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Living Books Hub",
+          url: SITE_URL,
+          description:
+            "The curated living books library for homeschool families",
+          sameAs: [],
+        }),
+      }}
+    />
+  );
+}
+
 export function BookJsonLd({ book }: { book: BookDetail }) {
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org",

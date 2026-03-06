@@ -13,6 +13,13 @@ export const metadata: Metadata = {
       "Living Books for History: The Best Books by Time Period — Living Books Hub",
     description:
       "The complete guide to living books for history — organized by time period for homeschool families.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Living Books for History: The Best Books by Time Period",
+    description:
+      "Find the best living books for every period of history — ancient, medieval, renaissance, early modern, American, and modern. Organized for homeschool families.",
   },
 };
 

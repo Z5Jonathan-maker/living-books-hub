@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BlogArticle } from "@/components/BlogArticle";
+import { EmailSignup } from "@/components/EmailSignup";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,6 +12,13 @@ export const metadata: Metadata = {
     title: "Charlotte Mason Book List 2026 — Living Books Hub",
     description:
       "The complete Charlotte Mason book list for 2026 — organized and searchable.",
+    type: "article",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Charlotte Mason Book List 2026",
+    description:
+      "The definitive Charlotte Mason reading list for 2026. Organized by year, subject, and reading level with links to buy or borrow every title.",
   },
 };
 
@@ -128,6 +136,10 @@ export default function CharlotteMasonBookList() {
           free printable list of 50 must-read living books
         </Link>.
       </p>
+
+      <div className="my-12 not-prose">
+        <EmailSignup variant="card" source="blog" />
+      </div>
     </BlogArticle>
   );
 }
